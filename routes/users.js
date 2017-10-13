@@ -5,17 +5,31 @@ var mongoose = require('./common.js');
 var PAGE_SIZE = 3;
 
 //请求文章列表信息的路由
+/*
+* * 扩展:db.collection.find({ $or : [{a : 1}, {b : 2} ]})
+ 符合两个条件中任意一个的数据。$or语法表示或的意思。
+ */
 router.get('/requestlists.html', function(req, res, next) {
     //console.log(req.query.page);
     //当前页需要跳过的条数
     var page = req.query.page;
     var skipsize = (page-1)*PAGE_SIZE;
-    blogArticleQueryModel.find({}).sort({"ctime":-1}).exec(function(err,data){
+    //console.log(req.query.keywords);
+    var keywords = new RegExp(req.query.keywords);
+    var queryArr = [
+        { "title"	:keywords},
+        { "content"	:keywords},
+        { "abstract":keywords},
+        { "author"	:keywords},
+        { "source"	:keywords},
+        { "category":keywords}
+    ];
+    blogArticleQueryModel.find({$or:queryArr}).sort({"ctime":-1}).exec(function(err,data){
         //第一次查询,需要知道总的条数,
         var pagecounts = Math.ceil(data.length/PAGE_SIZE);
         //console.log(pagecounts);
         //分页条件
-        blogArticleQueryModel.find({}).skip(skipsize).limit(PAGE_SIZE).sort({"ctime":-1}).exec(function(err,data){
+        blogArticleQueryModel.find({$or:queryArr}).skip(skipsize).limit(PAGE_SIZE).sort({"ctime":-1}).exec(function(err,data){
             data.push({"pagecounts":pagecounts});
             res.send(data);
         });

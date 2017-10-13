@@ -73,7 +73,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="keySearch" placeholder="输入关键字查找文章...">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default" id="keySearch" type="button">搜一搜</button>
+                                        <button class="btn btn-default" id="keySearchBtn" type="button">搜一搜</button>
                                     </span>
                                 </div>
                             </div>
@@ -120,7 +120,9 @@
     <script type="text/javascript">
       //显示文章列表的方法
         function showArticleLists(page){
-            $.get('/users/requestlists.html?page='+page,function (data) {
+            var keywords = $("#keySearch").val();
+            console.log(keywords);
+            $.get('/users/requestlists.html?page='+page+'&keywords='+keywords,function (data) {
                 if(data){
                   var html = '';
                   var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
@@ -159,7 +161,10 @@
                         html += '<li class="disabled"><a href="javascript:showArticleLists('+(page+1)+')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
                     }
                     $("#pagelists").html(html);
-              }
+              }else{
+                var html ='不好意思,没有找到你想要的..';
+                    $("#articleLists").html(html);
+                }
           });
       }
 //      调用文章列表函数
@@ -167,6 +172,8 @@
         //请求分类信息
         showcategoryLists();
         //处理搜索请求
-        searchkeywors();
+        $("#keySearchBtn").on('click',function(){
+            showArticleLists(1);
+        });
   </script>
 </html>
