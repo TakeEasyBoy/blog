@@ -38,7 +38,7 @@
                 //拼接分类信息
                 var html = '';
                 for(var i in category){
-                    html += '<button class="btn btn-success" type="button"><a href="">'+obj[category[i]].value+'&emsp;<span class="badge">'+obj[category[i]].count+'</span></a></button>';
+                    html += '<button class="btn btn-info" type="button"><a href="">'+obj[category[i]].value+'&emsp;<span class="badge">'+obj[category[i]].count+'</span></a></button>';
                 }
                 $("#category").html(html);
                 //console.log(obj,category);

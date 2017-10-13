@@ -68,17 +68,16 @@
                                 </ul>
                             </li>
                         </ul>
-                        <form class="navbar-form navbar-left">
-                            <div class="form-group">
-                                <input type="text" id="keySearch" class="form-control" placeholder="请输入关键字进行查询">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字查找文章...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" id="keySearch" type="button">搜一搜</button>
+                                    </span>
+                                </div>
                             </div>
-                            <button type="submit" id="searchBtn" class="btn btn-default">搜一搜</button>
-                        </form>
-                        <!--<ul class="nav navbar-nav navbar-right">
-                            <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
-                            <li><a href="../navbar-static-top/">Static top</a></li>
-                            <li><a href="../navbar-fixed-top/">Fixed top</a></li>
-                        </ul>-->
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -94,15 +93,9 @@
         <div class="col-sm-8 blog-main">
             <!--//文章内容插入到这来-->
             <article id="articleLists"></article>
-            <!--<nav>
-                &lt;!&ndash; 分页信息&ndash;&gt;
-                <ul class="pager" id="pagelists"></ul>
-            </nav>-->
+            <!-- 分页信息列表-->
             <nav aria-label="Page navigation">
-                <ul class="pagination" id="pagelists">
-                    <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                </ul>
+                <ul class="pagination" id="pagelists"></ul>
             </nav>
         </div><!-- /.blog-main -->
           <!-- aside-->
@@ -125,10 +118,6 @@
     <script src="blog.js"></script>
 </body>
     <script type="text/javascript">
-        //请求分类信息页面的方法
-        function showCategories(){
-
-        }
       //显示文章列表的方法
         function showArticleLists(page){
             $.get('/users/requestlists.html?page='+page,function (data) {
@@ -171,9 +160,7 @@
                     }
                     $("#pagelists").html(html);
               }
-
           });
-
       }
 //      调用文章列表函数
         showArticleLists(1);

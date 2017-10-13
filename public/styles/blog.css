@@ -88,6 +88,7 @@ h6, .h6 {
 .blog-header {
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-left: 12px;
 }
 .blog-title {
   margin-top: 30px;
@@ -132,19 +133,32 @@ h6, .h6 {
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
 }
-
+/*分类信息使用浮动布局*/
 #category{
     display: flex;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
     flex-wrap: wrap;
     overflow: hidden;
 }
-
-
-/*搜索按鈕的margin*/
-#searchBtn{
-    margin-top: 5px;
+#category>button{
+    margin-bottom: 5px;
+    margin-right: 10px;
+    background-color: #3da149;
 }
+
+#category>button>a{
+    text-decoration: none;
+    color:white;
+}
+/*搜索按鈕的margin*/
+
+.input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    margin-top: 7px;
+}
+
 /* Pagination */
 .pager {
   margin-bottom: 60px;
@@ -165,19 +179,23 @@ h6, .h6 {
  */
 
 .blog-post {
-  margin-bottom: 30px;
+    margin-bottom: 35px;
+    box-shadow: 1px 1px 10px 3px #ccc;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .blog-post-title {
-  margin-bottom: 5px;
-  font-size: 26px;
-    /*text-align: center;*/
+    padding-top: 20px;
+    margin-bottom: 5px;
+    font-size: 26px;
+    /* text-align: center; */
 }
 .color647686{
     color: #647686;
 }
 /*控制博客摘要的首行缩进*/
 .blog-textindent{
-    text-indent: 36px;
+    text-indent: 26px;
 }
 /*阅读更多的斜体样式*/
 .blog-text-readmore{
@@ -188,6 +206,7 @@ h6, .h6 {
 .blog-abstract-info{
     color: #b9845d;
     text-align: right;
+    margin-right: 10px;
 }
 /*博客分类信息的样式*/
 .blog-categories-info{
