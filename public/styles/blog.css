@@ -1,0 +1,224 @@
+/*
+ * Globals
+ */
+
+body {
+  font-family: Arial, "微软雅黑", Times, serif;
+  color: #555;
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #333;
+}
+
+
+/*
+ * Override Bootstrap's default container.
+ */
+
+@media (min-width: 1200px) {
+  .container {
+    width: 970px;
+  }
+}
+
+
+/*
+ * Masthead for nav
+ */
+
+.blog-masthead {
+  background-color: #f8f8f8;
+
+  -webkit-box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
+          box-shadow: inset 0 -2px 5px rgba(0,0,0,.1);
+}
+/*分类的样式*/
+#blog-nav-category{
+
+}
+
+/* Nav links */
+.blog-nav-item {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  font-weight: 500;
+  color: #cdddeb;
+    font-size: 22px;
+}
+.blog-nav-item:hover,
+.blog-nav-item:focus, {
+    color: #fff;
+    text-decoration: none;
+
+}
+
+/* Active state gets a caret at the bottom */
+.blog-nav .active {
+  color: #fff;
+}
+.blog-nav :hover:after,.blog-nav .active:after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -5px;
+  vertical-align: middle;
+  content: " ";
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid;
+  border-left: 5px solid transparent;
+}
+
+
+/*
+ * Blog name and description
+ */
+
+.blog-header {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.blog-title {
+  margin-top: 30px;
+  margin-bottom: 0;
+  font-size: 40px;
+  font-weight: normal;
+}
+.blog-description {
+  font-size: 20px;
+  color: #999;
+}
+/*新的导航栏的样式*/
+.navbar {
+    margin: 10px;
+    box-shadow: 2px 2px 2px #ccc;
+}
+/*
+ * Main column and sidebar layout
+ */
+
+.blog-main {
+  font-size: 16px;
+  line-height: 1.5;
+    /*overflow: hidden;*/
+}
+/*限制上传图片的最大宽度 modified 2017-10-10 by chaoge*/
+.blog-main img{
+    max-width: 660px;
+}
+/* Sidebar modules for boxing content */
+.sidebar-module {
+  padding: 15px;
+  margin: 0 -15px 15px;
+}
+.sidebar-module-inset {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+.sidebar-module-inset p:last-child,
+.sidebar-module-inset ul:last-child,
+.sidebar-module-inset ol:last-child {
+  margin-bottom: 0;
+}
+
+#category{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+
+/*搜索按鈕的margin*/
+#searchBtn{
+    margin-top: 5px;
+}
+/* Pagination */
+.pager {
+  margin-bottom: 60px;
+  text-align: left;
+}
+
+.pager > li > a{
+  width: 60px;
+  padding: 5px 6px;
+  text-align: center;
+  border-radius: 8px;
+    font-size: 14px;
+}
+
+
+/*
+ * Blog posts
+ */
+
+.blog-post {
+  margin-bottom: 30px;
+}
+.blog-post-title {
+  margin-bottom: 5px;
+  font-size: 26px;
+    /*text-align: center;*/
+}
+.color647686{
+    color: #647686;
+}
+/*控制博客摘要的首行缩进*/
+.blog-textindent{
+    text-indent: 36px;
+}
+/*阅读更多的斜体样式*/
+.blog-text-readmore{
+    font-style: italic;
+}
+/*博客摘要下面浏览信息等的样式*/
+/*控制摘要下面的日期,阅读量,评论列表*/
+.blog-abstract-info{
+    color: #b9845d;
+    text-align: right;
+}
+/*博客分类信息的样式*/
+.blog-categories-info{
+    font-size: 14px;
+}
+.blog-post-meta {
+  margin-bottom: 20px;
+    margin-left:50px;
+  color: #999;
+}
+
+
+/*
+ * Footer
+ */
+
+.blog-footer {
+  padding: 40px 0;
+  color: #999;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-top: 1px solid #e5e5e5;
+}
+.blog-footer p:last-child {
+  margin-bottom: 0;
+}
+
+#qrcode{
+    width: 20%;
+}
+
+#qrcode:hover{
+    width:90% ;
+}

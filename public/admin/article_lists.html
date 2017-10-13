@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>后台管理系统-文章列表</title>
+		<link href="images/index.css" type="text/css" rel="stylesheet"/>
+		<script src="images/jquery.js"></script>
+        <script type="text/javascript" src="./template.js"></script>
+        <script type="text/javascript" src="/admin/check.html"></script>
+	</head>
+	<body>
+		<script src="./scripts/header.js" type="text/javascript" charset="utf-8"></script>
+		<section>
+			<script src="./scripts/nav.js" type="text/javascript" charset="utf-8"></script>
+			<div class="mainbox">
+				<div class="note">
+					<h4>文章列表</h4>
+					<form  class="search_form">
+						<input type="text" id="keywords" name="keywords" placeholder="请输入要搜索的关键词,包括但不限于作者,摘要,标题,内容"/>
+						<input type="button" id="searchBtn" name="searchBtn" value="搜索"/>
+					</form>
+					<table class="news_list">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>标题</th>
+								<th>摘要</th>
+								<th>日期</th>
+								<th>來源</th>
+								<th>点击率</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="newslists"></tbody>
+                        <script type="text/html" id="newslistmodel">
+                            {{each data as v i}}
+                            <tr>
+                                <td>{{i + 1}}</td>
+                                <td>{{v.title}}</td>
+                                <td>{{v.abstract}}</td>
+                                <td>{{v.ctime}}</td>
+                                <td>{{v.source}}</td>
+                                <td>666次</td>
+                                <td>
+                                    <a href="./article_modify.html?id={{v._id}}">修改</a> /
+                                    <a href="javascript:delitem('{{v._id}}')">删除</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                         </script>
+					</table>
+					<div class="page" id="pagelists"></div>
+					<div id="addmore">
+						<a href="article_publish.html"><input type="button" id="addmoreBtn" value="继续添加文章" /></a>
+					</div>
+				</div>
+                <div class="note">
+                    <h4>后台管理系统使用说明</h4>
+                    <ol class="note_list">
+                        <li>第一次使用本系统，请点击左边管理导航中选项对你的网站信息和一些网站配置参数进行配置。</li>
+                        <li>管理功能导航中各栏目都可以收缩和打开，您可以根据自己需要来选择。</li>
+                        <li>本系统应用了最新的HTML5特性和CSS3属性，在IE11/Edge/Opera/Safari以及Chrome等系列新版本浏览器下都获得良好支持，如果您的浏览器出现错误或非正常表现请联系我们。</li>
+                    </ol>
+                </div>
+                <div class="note">
+                    <h4>开发信息</h4>
+                    <ul class="note_list">
+                        <li>制作团队&emsp;&emsp;路飞的笑</li>
+                        <li>联系方式&emsp;&emsp;QQ：519809848 &emsp;联系电话：18581513285</li>
+                    </ul>
+                </div>
+			</div>
+		</section>
+		<script type="text/javascript">
+           window.g_pagesizes;
+            //第一次请求
+            showpage(1);
+            //不能将该函数放在页面加载完成后的处理函数那里,因为这里面是要渲染模版的,在页面还在完成之前需要拼接页码内容,
+            //如果放在下面,则showpage会因为其在渲染的时候找不到这个函数而报错
+            function showpage(page){
+                //获取查询的条件,
+                var keywords = $("#keywords").val();
+                //发起请求,请求显示新闻列表的内容
+                $.get('/admin/requestlists.html?page='+page+'&keywords='+keywords,function(data){
+//                        console.log(data);
+                    //取出总页数
+                    g_pagesizes = data.pop(data).pageconuts;
+//                        console.log(g_pagesizes);
+                    //拼接文章列表的模版
+                    var str = template('newslistmodel',{"data":data});
+                    $('#newslists').html(str);
+                    //拼接页码
+                    var html = '';
+                    //显示上一页
+                    if(page > 1){
+                        html += '<a href="javascript:showpage('+(page-1)+')" >上一页</a>';
+                    }
+                    for(var i = 1; i <= g_pagesizes;i++){
+                        if(page == i){
+                            html += '<a href="javascript:showpage('+i+')" class="on">'+i+'</a>';
+                        }else{
+                            html += '<a href="javascript:showpage('+i+')" >'+i+'</a>';
+                        }
+                    }
+                    if(page < g_pagesizes){
+                        html += '<a href="javascript:showpage('+(page+1)+')" >下一页</a>';
+                    }
+                    $('#pagelists').html(html);
+                });
+            }
+            //定义删除函数,用于删除指定id的数据
+            function delitem(id){
+                $.get('/admin/deleteitem.html?id='+id,function(data){
+                    alert(data);
+                    //删除过后需要及时刷新条目
+                    showpage(g_pagesizes);
+                });
+            }
+
+            $(function(){
+				$('dt').click(function(){
+					var obj=$(this).next();
+					if($(this).next().css('display')=='block'){
+						obj.hide('fast');
+						$(this).removeClass('on');
+					}else{
+						obj.show('fast');
+						$(this).addClass('on');
+					}
+				});
+                $("#searchBtn").click(function(){
+                    showpage(1);
+                });
+               
+			});
+
+		</script>
+	</body>
+</html>

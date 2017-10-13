@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./images/favicon.ico">
+
+    <title>博客-详情</title>
+
+    <!-- Bootstrap core CSS -->
+    <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
+    <link href="./styles/bootstrap.css" rel="stylesheet">
+    <!-- 引入代码高亮的主题和js-->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./styles/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./styles/blog.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="./ueditor/third-party/SyntaxHighlighter/shCoreRDark.css"/>
+
+
+    <script src="./scripts/ie10-viewport-bug-workaround.js"></script>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="./scripts/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./scripts/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+    <script type="text/javascript" src="./ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+    <!-- 引入模版-->
+    <script src="./admin/template.js"></script>
+
+</head>
+
+<body>
+
+    <header class="blog-masthead">
+        <div class="container">
+          <!--  <nav class="blog-nav">
+                <a class="blog-nav-item" href="index.html">主页</a>
+                <a class="blog-nav-item" href="#">随笔</a>
+                <a class="blog-nav-item active" href="#">技术干货</a>
+                <a class="blog-nav-item" href="#">分类</a>
+                <a class="blog-nav-item" href="aboutme.html">关于我</a>
+            </nav>-->
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">极客</a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="index.html">主页</a></li>
+                            <li><a href="#">随笔</a></li>
+                            <li class="active"><a href="#">技术干货</a></li>
+                            <li><a href="aboutme.html">关于我</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li class="dropdown-header">Nav header</li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <!--<ul class="nav navbar-nav navbar-right">
+                            <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+                            <li><a href="../navbar-static-top/">Static top</a></li>
+                            <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+                        </ul>-->
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="blog-header">
+            <h4 class="blog-title">博客主页</h4>
+            <p class="lead blog-description">这是博客内容</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <article class="blog-post" id="articleDetaile"></article>
+            </div><!-- /.blog-main -->
+            <!-- 侧边栏-->
+            <script src="scripts/aside.js"></script>
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+
+    <script src="scripts/footer.js"></script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="./scripts/jquery.min.js"></script>
+<script src="./scripts/bootstrap.min.js"></script>
+    <!-- 请求文章列表-->
+<script src="blog.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script type="text/javascript"> SyntaxHighlighter.all();</script>
+    <!--请求文章详情的js-->
+<script type="text/javascript">
+    //查找地址栏的id,注意id的取得的方法
+    var id = location.href.split("=")[1];
+    $.post('/users/requestDetaile.html',{"id":id},function(data){
+        if(data){
+            var html = '';
+            html += '<h3 class="blog-post-title">'+data.title+'</h3>';
+            html += '<p>'+data.content+'</p>';
+            html += '<p class="blog-post-meta">'+data.ctime+'  by &emsp;&emsp;<a href="#">'+data.author+'</a></p>';
+            $("#articleDetaile").html(html);
+        }
+    });
+    function showArticleLists(){
+        $.get('/users/requestlists.html',function (data) {
+            if(data){
+                var html = '';
+                for(var i in data){
+                    html += '<div class="blog-post">';
+                    html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+                    html += '<p><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].abstract+'</a></p><hr></div>';
+                }
+                $("#articleLists").html(html);
+
+            }
+        });
+    }
+    showArticleLists();
+    showcategoryLists();
+</script>
+
+</body>
+</html>

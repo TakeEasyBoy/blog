@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>后台管理系统-修改</title>
+		<link href="images/index.css" type="text/css" rel="stylesheet"/>
+		<script src="images/jquery.js"></script>
+		<script type="text/javascript" src="/admin/check.html"></script>
+        <script type="text/javascript" src="template.js"></script>
+        <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+        <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
+	</head>
+	<body>
+		<script src="./scripts/header.js" type="text/javascript" charset="utf-8"></script>
+		<section>
+			<script src="./scripts/nav.js" type="text/javascript" charset="utf-8"></script>
+			<div class="mainbox">
+				<div class="note">
+					<h4>发表文章</h4>
+					<form id="articleForm">
+                    <table class="news_form">
+                        <tr>
+                            <td>文章标题：</td>
+                            <td><input type="text" id="articleTitle" name="articleTitle" class="inbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>文章分类：</td>
+                            <td>
+                                <input type="text" id="catagory" name="catagory" class="inbox"  placeholder="请输入类别,以逗号隔开"/>
+                            </td>
+                        </tr>
+                       <tr>
+                            <td>作&emsp;&emsp;者：</td>
+                            <td><input type="text" id="articleAuthor" name="articleAuthor" class="inbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>來&emsp;&emsp;源：</td>
+                            <td><input type="text" id="articleSource" name="articleSource" class="inbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>摘&emsp;&emsp;要：</td>
+                            <td><input type="text" id="articleAbstract" name="articleAbstract" class="inbox"/></td>
+                        </tr>
+                        <tr>
+                            <td>内&emsp;&emsp;容：</td>
+                            <td><script id="editor" type="text/plain" style="width:600px;height:300px;"></script></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="button" id="confirmbtn" value="确定修改"/></td>
+                        </tr>
+                    </table>
+                </form>
+				</div>
+                <div class="note">
+                    <h4>后台管理系统使用说明</h4>
+                    <ol class="note_list">
+                        <li>第一次使用本系统，请点击左边管理导航中选项对你的网站信息和一些网站配置参数进行配置。</li>
+                        <li>管理功能导航中各栏目都可以收缩和打开，您可以根据自己需要来选择。</li>
+                        <li>本系统应用了最新的HTML5特性和CSS3属性，在IE11/Edge/Opera/Safari以及Chrome等系列新版本浏览器下都获得良好支持，如果您的浏览器出现错误或非正常表现请联系我们。</li>
+                    </ol>
+                </div>
+                <div class="note">
+                    <h4>开发信息</h4>
+                    <ul class="note_list">
+                        <li>制作团队&emsp;&emsp;路飞的笑</li>
+                        <li>联系方式&emsp;&emsp;QQ：519809848 &emsp;联系电话：18581513285</li>
+                    </ul>
+                </div>
+			</div>
+		</section>
+		<script type="text/javascript">
+
+			//进入页面后就请求数据,将旧数据显示在页面中
+            (function(){
+//                实例化编辑器
+                var ue = UE.getEditor('editor');
+                //进入页面后,获取浏览器中的id,然后发起旧数据的请求
+                    window.id = (location.href).split("=")[1];
+                    $.get('/admin/modifyitem.html?id=' + id, function (data) {
+//                  console.log(data);
+                        $("#articleTitle").val(data.title);
+                        $("#articleAbstract").val(data.abstract);
+//                    $("#articleContent").val(data.content);
+                        //一定要等到加载完毕后才能进行设置
+                        //而且还不能添加addEventListener来添加事件,会提示Uncaught TypeError: ue.addEventListener is not a function
+                        //at Object.success
+                        ue.addListener('ready',function(){
+                            ue.setContent(data.content);
+                        });
+
+                        $("#catagory").prop({"value": data.category});
+                        $("#articleAuthor").val(data.author);
+                    });
+            })()
+
+			$(function(){
+                //实例化每个编辑器
+
+
+				$('dt').click(function(){
+					var obj=$(this).next();
+					if($(this).next().css('display')=='block'){
+						obj.hide('fast');
+						$(this).removeClass('on');
+					}else{
+						obj.show('fast');
+						$(this).addClass('on');
+					}
+				});
+
+                //注册点击提交按钮的事件
+                $("#confirmbtn").click(function(){
+                	//使用原生的ajax来写
+
+                    var category = $("#catagory").prop("value");
+                    //获取输入框中的内容
+                    var articleTitle = $("#articleTitle").val();
+                    var articleAuthor = $("#articleAuthor").val();
+                    var articleAbstract = $("#articleAbstract").val();
+                    var articleSource = $("#articleSource").val();
+                    var content = UE.getEditor('editor').getContent();
+                    var datas = {
+                        "category":category,
+                        "content":content,
+                        "articleTitle":articleTitle,
+                        "articleAuthor":articleAuthor,
+                        "articleAbstract":articleAbstract,
+                        "articleSource":articleSource,
+                        "id":id
+                    }
+                    console.log(UE.getEditor('editor').getContent());
+                    console.log(datas);
+                    $.ajax({
+                        type:"post",
+                        datatype:"json",
+                        data:datas,
+                        url:"/admin/comfirmmodify.html",
+                        success:function(data){
+                            if(data == 1){
+                                location.href = './article_lists.html';
+                                alert('文章修改成功');
+                            }
+                        }
+                    });
+                	/*var ajax = new XMLHttpRequest();
+                	ajax.open('post','/admin/comfirmmodify.html');
+                    ajax.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+                    ajax.onreadystatechange = function(){
+                        if(ajax.status == 200 && ajax.readyState == 4){
+                            if(ajax.responseText == 1){
+                                location.href = './article_lists.html';
+                                alert('文章修改成功');
+                            }
+                        }
+                    }
+                	ajax.send(datas);*/
+                });
+			});
+
+		</script>
+	</body>
+</html>

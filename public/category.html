@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="前端开发技术分享博客">
+      <meta name="keyword" content="前端开发">
+    <meta name="author" content="黄名超">
+    <link rel="icon" href="./images/favicon.ico">
+    <title>博客-首页</title>
+    <!-- Bootstrap core CSS -->
+    <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
+    <link href="./styles/bootstrap.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./styles/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./styles/blog.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="./scripts/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./scripts/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <!-- 引入模版-->
+      <script src="./admin/template.js"></script>
+  </head>
+
+    <body>
+    <!--header-->
+    <header class="blog-masthead">
+        <div class="container">
+            <nav class="blog-nav">
+                <a class="blog-nav-item active" href="index.html">主页</a>
+                <a class="blog-nav-item" href="#">随笔</a>
+                <a class="blog-nav-item" href="#">技术干货</a>
+                <a class="blog-nav-item" href="#">分类</a>
+                <a class="blog-nav-item" href="aboutme.html">关于我</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+      <div class="blog-header">
+        <h3 class="blog-title">代码,让世界更美好</h3>
+        <p class="lead blog-description">技术分享,吹牛逼</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+            <!--//文章内容插入到这来-->
+            <article id="articleLists"></article>
+            <nav>
+                <!-- 分页信息-->
+                <ul class="pager" id="pagelists"> </ul>
+            </nav>
+        </div><!-- /.blog-main -->
+          <!-- aside-->
+          <script src="scripts/aside.js"></script>
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+
+    <!-- footer-->
+    <script src="scripts/footer.js"></script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <script src="./scripts/jquery.min.js"></script>
+    <script src="./scripts/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./scripts/ie10-viewport-bug-workaround.js"></script>
+    <!-- 请求文章列表-->
+
+</body>
+    <script type="text/javascript">
+      //显示文章列表的方法
+        function showArticleLists(page){
+
+            $.get('/users/requestlists.html?page='+page,function (data) {
+                if(data){
+                  var html = '';
+                  var category = [];    //用于遍历对象
+                  var categories = [];//结构,:类别+长度;存储所有的类别
+                  var obj = {};     //用于存储新的包含数量的类别
+                  var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
+                   console.log(pagecounts);
+                  for(var i in data){
+                      html += '<div class="blog-post">';
+                      html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+                      html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
+                      html += ' <p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+                      html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
+                      html += ' <p class="blog-categories-info blog-textindent">分类标签: '+data[i].category+'</p><hr></div>';
+                      //将所有的类型存进categories
+
+//                      console.log(data[i].category,data[i].category.split(','));
+                      //后台传过来的分类信息是是一个数组转换程的字符串,分类信息以 ',' 隔开,因此使用分割字符串的方式对数据进行分割,获得具体的分类信息
+                      var items = data[i].category.split(',');
+                      //将分割出来的每个数据都压入categories分类信息中,得到所有的分类信息
+                      for(var j = 0;j < items.length;j++){
+//                          console.log(items[j]);
+                          categories.push(items[j]);
+                      }
+//                      categories.push(data[i].category);
+                  }
+                  $("#articleLists").html(html);
+                    //分类信息
+                  for(var i = 0; i < categories.length;i++){
+                      var v = categories[i];
+                      if(obj[v] && (obj[v].value == v))  {          //obj[v] && (obj[v].value == v)若果位置变换,那么会报错,因为obj[v].value 值为undefined
+                          obj[v].count = ++obj[v].count;            //若之前出现过,那么就将count+1
+                      }else {                                       //若之前未出现过,则将该类型存储到obj对象中,
+                          obj[v] = {};
+                          obj[v].count = 1;
+                          obj[v].value = v;
+                          category.push(v);                         //将每个类别存入category,用于后面遍历obj中的对象
+                      }
+                  }
+                  //拼接分类信息
+                  var html = '';
+                  for(var i in category){
+                      html += '<li><a href="#">'+obj[category[i]].value+'&emsp;('+obj[category[i]].count+')</a></li>';
+                  }
+                  $("#category").html(html);
+
+                  //拼接分页信息
+                  var html = '';
+                    //如果当前页大于1,才显示上一页
+                    if(page > 1){
+                        html += '<li><a href="javascript:showArticleLists('+(page-1)+')">上一页</a></li>';
+                    }
+                    for(var i = 1; i <= pagecounts;i++){
+                        html +='<li><a href="javascript:showArticleLists('+i+')">'+i+'</a></li>';
+                    }
+                    //如果当前页小于总的页数,才显示下一页
+                    if(page < pagecounts){
+                        html += '<li><a href="javascript:showArticleLists('+(page+1)+')">下一页</a></li>';
+                    }
+                    $("#pagelists").html(html);
+              }
+
+          });
+
+      }
+//      调用文章列表函数
+        showArticleLists(1);
+        //需求:需要做分页
+
+  </script>
+</html>

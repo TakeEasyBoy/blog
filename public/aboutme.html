@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./images/favicon.ico">
+
+    <title>博客-关于</title>
+
+    <!-- Bootstrap core CSS -->
+    <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
+    <link href="./styles/bootstrap.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./styles/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./styles/blog.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="./scripts/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./scripts/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- 引入模版-->
+    <script src="./admin/template.js"></script>
+</head>
+
+<body>
+
+    <header class="blog-masthead">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="index.html">极客</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="index.html">主页</a></li>
+                            <li><a href="#">随笔</a></li>
+                            <li><a href="#">技术干货</a></li>
+                            <li class="active"><a href="aboutme.html">关于我</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li class="dropdown-header">Nav header</li>
+                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#">One more separated link</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <!--<ul class="nav navbar-nav navbar-right">
+                            <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+                            <li><a href="../navbar-static-top/">Static top</a></li>
+                            <li><a href="../navbar-fixed-top/">Fixed top</a></li>
+                        </ul>-->
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="blog-header">
+            <h3 class="blog-title">这是我的博客主页</h3>
+            <p class="lead blog-description">技术分享,吹牛逼</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-8 blog-main">
+                <!--//文章内容插入到这来-->
+                <article id="articleLists">
+                    <p>黄名超:生于92年,毕业于 <strong>桂林电子科技大学电气工程及其自动化专业</strong>,个人比较喜欢 <strong>前端开发</strong>,立志做一个<strong>web全栈开发工程师</strong>喜欢利用自己已有知识去倒腾些小玩意,
+                        有时候打打游戏,摄影,旅游.</p>
+                    <p>第一个项目是一个企业网站,我主要负责静态页面的开发以及交互的实现,布局采用的是 <strong>div+css布局</strong>, <strong>子绝父相</strong>等定位技术;同时涉及到少量的前后端的联调,使用到的技术是 <strong>ajax</strong>;与后端主要涉及的功能就是用户留言功能;</p>
+                    <p>第二个项目主要是一个电商网站,我主要根据UI效果图,将效果图高度还原为静态页面内容,主要做了首页,购物车,用户登陆,商品详情等页面,静态页面的布局都是采用DIV+CSS的布局方式;交互以及动画效果功能通过jquery完成,主要的功能有首页banner的轮播图,标签切换效果,商品放大镜,星级评价的功能,以及一些其他的特效;负责同后端数据的交互,通过ajax技术请求数据库内容通过前端模版 art-template 显示到页面中,对用户的每一次PV做出响应,请求后台数据,实现用户的每一次请求;</p>
+                    <p>第三个项目:是一个食堂管理系统,使用的是 <srtong>express</srtong> + <srtong>nodejs</srtong> + <srtong>mongoose</srtong> + <srtong>art-template</srtong>,我负责所有前后端的开发,数据库的设计;页面数据请求使用的主要的技术是ajax,cookie,后端通过各个子路由来接收每个前端页面的请求来完成数据库的增删改查的操作;数据库的设计:数据库名下包含多个集合,这些集合管理着 用户信息,用户操作日志管理,进货信息,供应商信息,进货信息管理等文档;</p>
+                    <p>联系我: <img id="qrcode" src="images/weixinqrcode.jpg" alt="我的联系方式"/></p>
+                </article>
+            </div><!-- /.blog-main -->
+
+            <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+                <!--<div class="sidebar-module sidebar-module-inset">
+
+                </div>-->
+                <!--<div class="sidebar-module">
+                    <h4>分类</h4>
+                    <ol class="list-unstyled" id="category"></ol>
+                </div>-->
+                <div class="sidebar-module">
+                    <h4>Elsewhere</h4>
+                    <ol class="list-unstyled">
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Facebook</a></li>
+                    </ol>
+                </div>
+            </div><!-- /.blog-sidebar -->
+
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+
+<footer class="blog-footer">
+    <p>Blog template built for <a href="http://getbootstrap.com">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+<script src="./scripts/jquery.min.js"></script>
+<script src="./scripts/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="./scripts/ie10-viewport-bug-workaround.js"></script>
+<!-- 请求文章列表-->
+
+</body>
+<script type="text/javascript">
+
+</script>
+</html>
