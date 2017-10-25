@@ -103,7 +103,7 @@ var respond = function (static_url, config = {}, callback) {
       }
       callback(req, res, next);
 
-    } else if (req.query.action === 'uploadimage'||req.query.action === 'uploadfile'||req.query.action === 'uploadvideo') {
+    } else if (req.query.action === 'uploadimage'||req.query.action === 'uploadfile'||req.query.action === 'uploadvideo' ) {
       var busboy = new Busboy({
         headers: req.headers
       });

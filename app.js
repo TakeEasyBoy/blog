@@ -38,7 +38,8 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), function (req, re
     //客户端上传文件设置
     var imgDir = '/upload/images/';
     var ActionType = req.query.action;
-    if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
+	console.log(ActionType);
+    if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo' || ActionType === 'uploadscreenimage' || ActionType === 'uploadscrawl') {
         var file_url = imgDir;//默认图片上传地址
         /*其他上传格式的地址*/
         if (ActionType === 'uploadfile') {

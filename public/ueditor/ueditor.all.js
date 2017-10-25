@@ -12190,6 +12190,66 @@ UE.plugins['paragraph'] = function() {
         }
     };
 };
+/**
+ * 打印
+ * @file
+ * @since 1.2.6.1
+ */
+
+/**
+ * 打印
+ * @command print
+ * @method execCommand
+ * @param { String } cmd 命令字符串
+ * @example
+ * ```javascript
+ * editor.execCommand( 'print' );
+ * ```
+ */
+UE.commands['print'] = {
+	execCommand : function(){
+		this.window.print();
+	},
+	notNeedUndo : 1
+};
+
+/**
+ * 清空文档插件
+ * @file
+ * @since 1.2.6.1
+ */
+
+/**
+ * 清空文档
+ * @command cleardoc
+ * @method execCommand
+ * @param { String } cmd 命令字符串
+ * @example
+ * ```javascript
+ * //editor 是编辑器实例
+ * editor.execCommand('cleardoc');
+ * ```
+ */
+
+UE.commands['cleardoc'] = {
+	execCommand : function( cmdName) {
+		var me = this,
+			enterTag = me.options.enterTag,
+			range = me.selection.getRange();
+		if(enterTag == "br"){
+			me.body.innerHTML = "<br/>";
+			range.setStart(me.body,0).setCursor();
+		}else{
+			me.body.innerHTML = "<p>"+(ie ? "" : "<br/>")+"</p>";
+			range.setStart(me.body.firstChild,0).setCursor(false,true);
+		}
+		setTimeout(function(){
+			me.fireEvent("clearDoc");
+		},0);
+
+	}
+};
+
 
 
 // plugins/time.js
@@ -12291,7 +12351,121 @@ UE.plugins['rowspacing'] = function(){
     };
 };
 
+	/**
+	 * 全选
+	 * @file
+	 * @since 1.2.6.1
+	 */
 
+	/**
+	 * 选中所有内容
+	 * @command selectall
+	 * @method execCommand
+	 * @param { String } cmd 命令字符串
+	 * @example
+	 * ```javascript
+	 * editor.execCommand( 'selectall' );
+	 * ```
+	 */
+	UE.plugins['selectall'] = function(){
+		var me = this;
+		me.commands['selectall'] = {
+			execCommand : function(){
+				//去掉了原生的selectAll,因为会出现报错和当内容为空时，不能出现闭合状态的光标
+				var me = this,body = me.body,
+					range = me.selection.getRange();
+				range.selectNodeContents(body);
+				if(domUtils.isEmptyBlock(body)){
+					//opera不能自动合并到元素的里边，要手动处理一下
+					if(browser.opera && body.firstChild && body.firstChild.nodeType == 1){
+						range.setStartAtFirst(body.firstChild);
+					}
+					range.collapse(true);
+				}
+				range.select(true);
+			},
+			notNeedUndo : 1
+		};
+
+
+		//快捷键
+		me.addshortcutkey({
+			"selectAll" : "ctrl+65"
+		});
+	};
+
+///import core
+///import plugins\inserthtml.js
+///import plugins\cleardoc.js
+///commands 模板
+///commandsName  template
+///commandsTitle  模板
+///commandsDialog  dialogs\template
+	UE.plugins['template'] = function () {
+		UE.commands['template'] = {
+			execCommand:function (cmd, obj) {
+				obj.html && this.execCommand("inserthtml", obj.html);
+			}
+		};
+		this.addListener("click", function (type, evt) {
+			var el = evt.target || evt.srcElement,
+				range = this.selection.getRange();
+			var tnode = domUtils.findParent(el, function (node) {
+				if (node.className && domUtils.hasClass(node, "ue_t")) {
+					return node;
+				}
+			}, true);
+			tnode && range.selectNode(tnode).shrinkBoundary().select();
+		});
+		this.addListener("keydown", function (type, evt) {
+			var range = this.selection.getRange();
+			if (!range.collapsed) {
+				if (!evt.ctrlKey && !evt.metaKey && !evt.shiftKey && !evt.altKey) {
+					var tnode = domUtils.findParent(range.startContainer, function (node) {
+						if (node.className && domUtils.hasClass(node, "ue_t")) {
+							return node;
+						}
+					}, true);
+					if (tnode) {
+						domUtils.removeClasses(tnode, ["ue_t"]);
+					}
+				}
+			}
+		});
+	};
+///import core
+///commands 字数统计
+///commandsName  WordCount,wordCount
+///commandsTitle  字数统计
+	/*
+	 * Created by JetBrains WebStorm.
+	 * User: taoqili
+	 * Date: 11-9-7
+	 * Time: 下午8:18
+	 * To change this template use File | Settings | File Templates.
+	 */
+
+	UE.plugins['wordcount'] = function(){
+		var me = this;
+		me.setOpt('wordCount',true);
+		me.addListener('contentchange',function(){
+			me.fireEvent('wordcount');
+		});
+		var timer;
+		me.addListener('ready',function(){
+			var me = this;
+			domUtils.on(me.body,"keyup",function(evt){
+				var code = evt.keyCode||evt.which,
+				//忽略的按键,ctr,alt,shift,方向键
+					ignores = {"16":1,"18":1,"20":1,"37":1,"38":1,"39":1,"40":1};
+				if(code in ignores) return;
+				clearTimeout(timer);
+				timer = setTimeout(function(){
+					me.fireEvent('wordcount');
+				},200)
+			})
+		});
+	};
 
 
 // plugins/lineheight.js
@@ -12564,8 +12738,518 @@ UE.plugins['dragdrop'] = function (){
         }
     })
 };
+	/**
+	 * 插入音乐命令
+	 * @file
+	 */
+	UE.plugin.register('music', function (){
+		var me = this;
+		function creatInsertStr(url,width,height,align,cssfloat,toEmbed){
+			return  !toEmbed ?
+			'<img ' +
+			(align && !cssfloat? 'align="' + align + '"' : '') +
+			(cssfloat ? 'style="float:' + cssfloat + '"' : '') +
+			' width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-music"' +
+			' src="'+me.options.langPath+me.options.lang+'/images/music.png" />'
+				:
+			'<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+			' src="' + url + '" width="' + width  + '" height="' + height  + '" '+ (align && !cssfloat? 'align="' + align + '"' : '') +
+			(cssfloat ? 'style="float:' + cssfloat + '"' : '') +
+			' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >';
+		}
+		return {
+			outputRule: function(root){
+				utils.each(root.getNodesByTagName('img'),function(node){
+					var html;
+					if(node.getAttr('class') == 'edui-faked-music'){
+						var cssfloat = node.getStyle('float');
+						var align = node.getAttr('align');
+						html =  creatInsertStr(node.getAttr("_url"), node.getAttr('width'), node.getAttr('height'), align, cssfloat, true);
+						var embed = UE.uNode.createElement(html);
+						node.parentNode.replaceChild(embed,node);
+					}
+				})
+			},
+			inputRule:function(root){
+				utils.each(root.getNodesByTagName('embed'),function(node){
+					if(node.getAttr('class') == 'edui-faked-music'){
+						var cssfloat = node.getStyle('float');
+						var align = node.getAttr('align');
+						html =  creatInsertStr(node.getAttr("src"), node.getAttr('width'), node.getAttr('height'), align, cssfloat,false);
+						var img = UE.uNode.createElement(html);
+						node.parentNode.replaceChild(img,node);
+					}
+				})
+
+			},
+			commands:{
+				/**
+				 * 插入音乐
+				 * @command music
+				 * @method execCommand
+				 * @param { Object } musicOptions 插入音乐的参数项， 支持的key有： url=>音乐地址；
+				 * width=>音乐容器宽度；height=>音乐容器高度；align=>音乐文件的对齐方式， 可选值有: left, center, right, none
+				 * @example
+				 * ```javascript
+				 * //editor是编辑器实例
+				 * //在编辑器里插入一个“植物大战僵尸”的APP
+				 * editor.execCommand( 'music' , {
+             *     width: 400,
+             *     height: 95,
+             *     align: "center",
+             *     url: "音乐地址"
+             * } );
+				 * ```
+				 */
+				'music':{
+					execCommand:function (cmd, musicObj) {
+						var me = this,
+							str = creatInsertStr(musicObj.url, musicObj.width || 400, musicObj.height || 95, "none", false);
+						me.execCommand("inserthtml",str);
+					},
+					queryCommandState:function () {
+						var me = this,
+							img = me.selection.getRange().getClosedNode(),
+							flag = img && (img.className == "edui-faked-music");
+						return flag ? 1 : 0;
+					}
+				}
+			}
+		}
+	});
+
+///import core
+///commands 查找替换
+///commandsName  SearchReplace
+///commandsTitle  查询替换
+///commandsDialog  dialogs\searchreplace
+	/**
+	 * @description 查找替换
+	 * @author zhanyi
+	 */
+
+	UE.plugin.register('searchreplace',function(){
+		var me = this;
+
+		var _blockElm = {'table':1,'tbody':1,'tr':1,'ol':1,'ul':1};
+
+		function findTextInString(textContent,opt,currentIndex){
+			var str = opt.searchStr;
+			if(opt.dir == -1){
+				textContent = textContent.split('').reverse().join('');
+				str = str.split('').reverse().join('');
+				currentIndex = textContent.length - currentIndex;
+
+			}
+			var reg = new RegExp(str,'g' + (opt.casesensitive ? '' : 'i')),match;
+
+			while(match = reg.exec(textContent)){
+				if(match.index >= currentIndex){
+					return opt.dir == -1 ? textContent.length - match.index - opt.searchStr.length : match.index;
+				}
+			}
+			return  -1
+		}
+		function findTextBlockElm(node,currentIndex,opt){
+			var textContent,index,methodName = opt.all || opt.dir == 1 ? 'getNextDomNode' : 'getPreDomNode';
+			if(domUtils.isBody(node)){
+				node = node.firstChild;
+			}
+			var first = 1;
+			while(node){
+				textContent = node.nodeType == 3 ? node.nodeValue : node[browser.ie ? 'innerText' : 'textContent'];
+				index = findTextInString(textContent,opt,currentIndex );
+				first = 0;
+				if(index!=-1){
+					return {
+						'node':node,
+						'index':index
+					}
+				}
+				node = domUtils[methodName](node);
+				while(node && _blockElm[node.nodeName.toLowerCase()]){
+					node = domUtils[methodName](node,true);
+				}
+				if(node){
+					currentIndex = opt.dir == -1 ? (node.nodeType == 3 ? node.nodeValue : node[browser.ie ? 'innerText' : 'textContent']).length : 0;
+				}
+
+			}
+		}
+		function findNTextInBlockElm(node,index,str){
+			var currentIndex = 0,
+				currentNode = node.firstChild,
+				currentNodeLength = 0,
+				result;
+			while(currentNode){
+				if(currentNode.nodeType == 3){
+					currentNodeLength = currentNode.nodeValue.replace(/(^[\t\r\n]+)|([\t\r\n]+$)/,'').length;
+					currentIndex += currentNodeLength;
+					if(currentIndex >= index){
+						return {
+							'node':currentNode,
+							'index': currentNodeLength - (currentIndex - index)
+						}
+					}
+				}else if(!dtd.$empty[currentNode.tagName]){
+					currentNodeLength = currentNode[browser.ie ? 'innerText' : 'textContent'].replace(/(^[\t\r\n]+)|([\t\r\n]+$)/,'').length
+					currentIndex += currentNodeLength;
+					if(currentIndex >= index){
+						result = findNTextInBlockElm(currentNode,currentNodeLength - (currentIndex - index),str);
+						if(result){
+							return result;
+						}
+					}
+				}
+				currentNode = domUtils.getNextDomNode(currentNode);
+
+			}
+		}
+
+		function searchReplace(me,opt){
+
+			var rng = me.selection.getRange(),
+				startBlockNode,
+				searchStr = opt.searchStr,
+				span = me.document.createElement('span');
+			span.innerHTML = '$$ueditor_searchreplace_key$$';
+
+			rng.shrinkBoundary(true);
+
+			//判断是不是第一次选中
+			if(!rng.collapsed){
+				rng.select();
+				var rngText = me.selection.getText();
+				if(new RegExp('^' + opt.searchStr + '$',(opt.casesensitive ? '' : 'i')).test(rngText)){
+					if(opt.replaceStr != undefined){
+						replaceText(rng,opt.replaceStr);
+						rng.select();
+						return true;
+					}else{
+						rng.collapse(opt.dir == -1)
+					}
+
+				}
+			}
 
 
+			rng.insertNode(span);
+			rng.enlargeToBlockElm(true);
+			startBlockNode = rng.startContainer;
+			var currentIndex = startBlockNode[browser.ie ? 'innerText' : 'textContent'].indexOf('$$ueditor_searchreplace_key$$');
+			rng.setStartBefore(span);
+			domUtils.remove(span);
+			var result = findTextBlockElm(startBlockNode,currentIndex,opt);
+			if(result){
+				var rngStart = findNTextInBlockElm(result.node,result.index,searchStr);
+				var rngEnd = findNTextInBlockElm(result.node,result.index + searchStr.length,searchStr);
+				rng.setStart(rngStart.node,rngStart.index).setEnd(rngEnd.node,rngEnd.index);
+
+				if(opt.replaceStr !== undefined){
+					replaceText(rng,opt.replaceStr)
+				}
+				rng.select();
+				return true;
+			}else{
+				rng.setCursor()
+			}
+
+		}
+		function replaceText(rng,str){
+
+			str = me.document.createTextNode(str);
+			rng.deleteContents().insertNode(str);
+
+		}
+		return {
+			commands:{
+				'searchreplace':{
+					execCommand:function(cmdName,opt){
+						utils.extend(opt,{
+							all : false,
+							casesensitive : false,
+							dir : 1
+						},true);
+						var num = 0;
+						if(opt.all){
+
+							var rng = me.selection.getRange(),
+								first = me.body.firstChild;
+							if(first && first.nodeType == 1){
+								rng.setStart(first,0);
+								rng.shrinkBoundary(true);
+							}else if(first.nodeType == 3){
+								rng.setStartBefore(first)
+							}
+							rng.collapse(true).select(true);
+							if(opt.replaceStr !== undefined){
+								me.fireEvent('saveScene');
+							}
+							while(searchReplace(this,opt)){
+								num++;
+							}
+							if(num){
+								me.fireEvent('saveScene');
+							}
+						}else{
+							if(opt.replaceStr !== undefined){
+								me.fireEvent('saveScene');
+							}
+							if(searchReplace(this,opt)){
+								num++
+							}
+							if(num){
+								me.fireEvent('saveScene');
+							}
+
+						}
+
+						return num;
+					},
+					notNeedUndo:1
+				}
+			}
+		}
+	});
+	/*自动保存插件*/
+	UE.plugin.register('autosave', function (){
+
+		var me = this,
+		//无限循环保护
+			lastSaveTime = new Date(),
+		//最小保存间隔时间
+			MIN_TIME = 20,
+		//auto save key
+			saveKey = null;
+
+		function save ( editor ) {
+
+			var saveData;
+
+			if ( new Date() - lastSaveTime < MIN_TIME ) {
+				return;
+			}
+
+			if ( !editor.hasContents() ) {
+				//这里不能调用命令来删除， 会造成事件死循环
+				saveKey && me.removePreferences( saveKey );
+				return;
+			}
+
+			lastSaveTime = new Date();
+
+			editor._saveFlag = null;
+
+			saveData = me.body.innerHTML;
+
+			if ( editor.fireEvent( "beforeautosave", {
+					content: saveData
+				} ) === false ) {
+				return;
+			}
+
+			me.setPreferences( saveKey, saveData );
+
+			editor.fireEvent( "afterautosave", {
+				content: saveData
+			} );
+
+		}
+
+		return {
+			defaultOptions: {
+				//默认间隔时间
+				saveInterval: 500
+			},
+			bindEvents:{
+				'ready':function(){
+
+					var _suffix = "-drafts-data",
+						key = null;
+
+					if ( me.key ) {
+						key = me.key + _suffix;
+					} else {
+						key = ( me.container.parentNode.id || 'ue-common' ) + _suffix;
+					}
+
+					//页面地址+编辑器ID 保持唯一
+					saveKey = ( location.protocol + location.host + location.pathname ).replace( /[.:\/]/g, '_' ) + key;
+
+				},
+
+				'contentchange': function () {
+
+					if ( !saveKey ) {
+						return;
+					}
+
+					if ( me._saveFlag ) {
+						window.clearTimeout( me._saveFlag );
+					}
+
+					if ( me.options.saveInterval > 0 ) {
+
+						me._saveFlag = window.setTimeout( function () {
+
+							save( me );
+
+						}, me.options.saveInterval );
+
+					} else {
+
+						save(me);
+
+					}
+
+
+				}
+			},
+			commands:{
+				'clearlocaldata':{
+					execCommand:function (cmd, name) {
+						if ( saveKey && me.getPreferences( saveKey ) ) {
+							me.removePreferences( saveKey )
+						}
+					},
+					notNeedUndo: true,
+					ignoreContentChange:true
+				},
+
+				'getlocaldata':{
+					execCommand:function (cmd, name) {
+						return saveKey ? me.getPreferences( saveKey ) || '' : '';
+					},
+					notNeedUndo: true,
+					ignoreContentChange:true
+				},
+
+				'drafts':{
+					execCommand:function (cmd, name) {
+						if ( saveKey ) {
+							me.body.innerHTML = me.getPreferences( saveKey ) || '<p>'+domUtils.fillHtml+'</p>';
+							me.focus(true);
+						}
+					},
+					queryCommandState: function () {
+						return saveKey ? ( me.getPreferences( saveKey ) === null ? -1 : 0 ) : -1;
+					},
+					notNeedUndo: true,
+					ignoreContentChange:true
+				}
+			}
+		}
+
+	});
+
+
+/**
+ * 背景插件，为UEditor提供设置背景功能
+ * @file
+ * @since 1.2.6.1
+ */
+UE.plugin.register('background', function () {
+	var me = this,
+		cssRuleId = 'editor_background',
+		isSetColored,
+		reg = new RegExp('body[\\s]*\\{(.+)\\}', 'i');
+
+	function stringToObj(str) {
+		var obj = {}, styles = str.split(';');
+		utils.each(styles, function (v) {
+			var index = v.indexOf(':'),
+				key = utils.trim(v.substr(0, index)).toLowerCase();
+			key && (obj[key] = utils.trim(v.substr(index + 1) || ''));
+		});
+		return obj;
+	}
+
+	function setBackground(obj) {
+		if (obj) {
+			var styles = [];
+			for (var name in obj) {
+				if (obj.hasOwnProperty(name)) {
+					styles.push(name + ":" + obj[name] + '; ');
+				}
+			}
+			utils.cssRule(cssRuleId, styles.length ? ('body{' + styles.join("") + '}') : '', me.document);
+		} else {
+			utils.cssRule(cssRuleId, '', me.document)
+		}
+	}
+	//重写editor.hasContent方法
+
+	var orgFn = me.hasContents;
+	me.hasContents = function(){
+		if(me.queryCommandValue('background')){
+			return true
+		}
+		return orgFn.apply(me,arguments);
+	};
+	return {
+		bindEvents: {
+			'getAllHtml': function (type, headHtml) {
+				var body = this.body,
+					su = domUtils.getComputedStyle(body, "background-image"),
+					url = "";
+				if (su.indexOf(me.options.imagePath) > 0) {
+					url = su.substring(su.indexOf(me.options.imagePath), su.length - 1).replace(/"|\(|\)/ig, "");
+				} else {
+					url = su != "none" ? su.replace(/url\("?|"?\)/ig, "") : "";
+				}
+				var html = '<style type="text/css">body{';
+				var bgObj = {
+					"background-color": domUtils.getComputedStyle(body, "background-color") || "#ffffff",
+					'background-image': url ? 'url(' + url + ')' : '',
+					'background-repeat': domUtils.getComputedStyle(body, "background-repeat") || "",
+					'background-position': browser.ie ? (domUtils.getComputedStyle(body, "background-position-x") + " " + domUtils.getComputedStyle(body, "background-position-y")) : domUtils.getComputedStyle(body, "background-position"),
+					'height': domUtils.getComputedStyle(body, "height")
+				};
+				for (var name in bgObj) {
+					if (bgObj.hasOwnProperty(name)) {
+						html += name + ":" + bgObj[name] + "; ";
+					}
+				}
+				html += '}</style> ';
+				headHtml.push(html);
+			},
+			'aftersetcontent': function () {
+				if(isSetColored == false) setBackground();
+			}
+		},
+		inputRule: function (root) {
+			isSetColored = false;
+			utils.each(root.getNodesByTagName('p'), function (p) {
+				var styles = p.getAttr('data-background');
+				if (styles) {
+					isSetColored = true;
+					setBackground(stringToObj(styles));
+					p.parentNode.removeChild(p);
+				}
+			})
+		},
+		outputRule: function (root) {
+			var me = this,
+				styles = (utils.cssRule(cssRuleId, me.document) || '').replace(/[\n\r]+/g, '').match(reg);
+			if (styles) {
+				root.appendChild(UE.uNode.createElement('<p style="display:none;" data-background="' + utils.trim(styles[1].replace(/"/g, '').replace(/[\s]+/g, ' ')) + '"><br/></p>'));
+			}
+		},
+		commands: {
+			'background': {
+				execCommand: function (cmd, obj) {
+					setBackground(obj);
+				},
+				queryCommandValue: function () {
+					var me = this,
+						styles = (utils.cssRule(cssRuleId, me.document) || '').replace(/[\n\r]+/g, '').match(reg);
+					return styles ? stringToObj(styles[1]) : null;
+				},
+				notNeedUndo: true
+			}
+		}
+	}
+});
 // plugins/undo.js
 /**
  * undo redo
@@ -12594,7 +13278,85 @@ UE.plugins['dragdrop'] = function (){
  * editor.execCommand( 'redo' );
  * ```
  */
+UE.plugin.register('anchor', function (){
+	return {
+		bindEvents:{
+			'ready':function(){
+				utils.cssRule('anchor',
+					'.anchorclass{background: url(\''
+					+ this.options.themePath
+					+ this.options.theme +'/images/anchor.gif\') no-repeat scroll left center transparent;cursor: auto;display: inline-block;height: 16px;width: 15px;}',
+					this.document);
+			}
+		},
+		outputRule: function(root){
+			utils.each(root.getNodesByTagName('img'),function(a){
+				var val;
+				if(val = a.getAttr('anchorname')){
+					a.tagName = 'a';
+					a.setAttr({
+						anchorname : '',
+						name : val,
+						'class' : ''
+					})
+				}
+			})
+		},
+		inputRule:function(root){
+			utils.each(root.getNodesByTagName('a'),function(a){
+				var val;
+				if((val = a.getAttr('name')) && !a.getAttr('href')){
+					a.tagName = 'img';
+					a.setAttr({
+						anchorname :a.getAttr('name'),
+						'class' : 'anchorclass'
+					});
+					a.setAttr('name')
 
+				}
+			})
+
+		},
+		commands:{
+			/**
+			 * 插入锚点
+			 * @command anchor
+			 * @method execCommand
+			 * @param { String } cmd 命令字符串
+			 * @param { String } name 锚点名称字符串
+			 * @example
+			 * ```javascript
+			 * //editor 是编辑器实例
+			 * editor.execCommand('anchor', 'anchor1');
+			 * ```
+			 */
+			'anchor':{
+				execCommand:function (cmd, name) {
+					var range = this.selection.getRange(),img = range.getClosedNode();
+					if (img && img.getAttribute('anchorname')) {
+						if (name) {
+							img.setAttribute('anchorname', name);
+						} else {
+							range.setStartBefore(img).setCursor();
+							domUtils.remove(img);
+						}
+					} else {
+						if (name) {
+							//只在选区的开始插入
+							var anchor = this.document.createElement('img');
+							range.collapse(true);
+							domUtils.setAttributes(anchor,{
+								'anchorname':name,
+								'class':'anchorclass'
+							});
+							range.insertNode(anchor).setStartAfter(anchor).setCursor(false,true);
+						}
+					}
+				}
+			}
+		}
+	}
+});
 UE.plugins['undo'] = function () {
     var saveSceneTimer;
     var me = this,
@@ -12885,6 +13647,7 @@ UE.plugins['paste'] = function () {
         if (doc.getElementById('baidu_pastebin')) {
             return;
         }
+	    console.dir(callback);
         var range = this.selection.getRange(),
             bk = range.createBookmark(),
         //创建剪贴的容器div
@@ -15686,7 +16449,149 @@ UE.plugins['basestyle'] = function(){
     }
 };
 
+//表格插件
+UE.plugin.register('charts', function (){
 
+		var me = this;
+
+		return {
+			bindEvents: {
+				'chartserror': function () {
+				}
+			},
+			commands:{
+				'charts': {
+					execCommand: function ( cmd, data ) {
+
+						var tableNode = domUtils.findParentByTagName(this.selection.getRange().startContainer, 'table', true),
+							flagText = [],
+							config = {};
+
+						if ( !tableNode ) {
+							return false;
+						}
+
+						if ( !validData( tableNode ) ) {
+							me.fireEvent( "chartserror" );
+							return false;
+						}
+
+						config.title = data.title || '';
+						config.subTitle = data.subTitle || '';
+						config.xTitle = data.xTitle || '';
+						config.yTitle = data.yTitle || '';
+						config.suffix = data.suffix || '';
+						config.tip = data.tip || '';
+						//数据对齐方式
+						config.dataFormat = data.tableDataFormat || '';
+						//图表类型
+						config.chartType = data.chartType || 0;
+
+						for ( var key in config ) {
+
+							if ( !config.hasOwnProperty( key ) ) {
+								continue;
+							}
+
+							flagText.push( key+":"+config[ key ] );
+
+						}
+
+						tableNode.setAttribute( "data-chart", flagText.join( ";" ) );
+						domUtils.addClass( tableNode, "edui-charts-table" );
+
+
+
+					},
+					queryCommandState: function ( cmd, name ) {
+
+						var tableNode = domUtils.findParentByTagName(this.selection.getRange().startContainer, 'table', true);
+						return tableNode && validData( tableNode ) ? 0 : -1;
+
+					}
+				}
+			},
+			inputRule:function(root){
+				utils.each(root.getNodesByTagName('table'),function( tableNode ){
+
+					if ( tableNode.getAttr("data-chart") !== undefined ) {
+						tableNode.setAttr("style");
+					}
+
+				})
+
+			},
+			outputRule:function(root){
+				utils.each(root.getNodesByTagName('table'),function( tableNode ){
+
+					if ( tableNode.getAttr("data-chart") !== undefined ) {
+						tableNode.setAttr("style", "display: none;");
+					}
+
+				})
+
+			}
+		}
+
+		function validData ( table ) {
+
+			var firstRows = null,
+				cellCount = 0;
+
+			//行数不够
+			if ( table.rows.length < 2 ) {
+				return false;
+			}
+
+			//列数不够
+			if ( table.rows[0].cells.length < 2 ) {
+				return false;
+			}
+
+			//第一行所有cell必须是th
+			firstRows = table.rows[ 0 ].cells;
+			cellCount = firstRows.length;
+
+			for ( var i = 0, cell; cell = firstRows[ i ]; i++ ) {
+
+				if ( cell.tagName.toLowerCase() !== 'th' ) {
+					return false;
+				}
+
+			}
+
+			for ( var i = 1, row; row = table.rows[ i ]; i++ ) {
+
+				//每行单元格数不匹配， 返回false
+				if ( row.cells.length != cellCount ) {
+					return false;
+				}
+
+				//第一列不是th也返回false
+				if ( row.cells[0].tagName.toLowerCase() !== 'th' ) {
+					return false;
+				}
+
+				for ( var j = 1, cell; cell = row.cells[ j ]; j++ ) {
+
+					var value = utils.trim( ( cell.innerText || cell.textContent || '' ) );
+
+					value = value.replace( new RegExp( UE.dom.domUtils.fillChar, 'g' ), '' ).replace( /^\s+|\s+$/g, '' );
+
+					//必须是数字
+					if ( !/^\d*\.?\d+$/.test( value ) ) {
+						return false;
+					}
+
+				}
+
+			}
+
+			return true;
+
+		}
+
+	});
 
 // plugins/simpleupload.js
 /**
