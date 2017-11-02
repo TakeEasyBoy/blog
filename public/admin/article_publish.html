@@ -25,8 +25,18 @@
 								<td>文章标题：</td>
 								<td><input type="text" id="articleTitle" name="articleTitle" class="inbox"/></td>
 							</tr>
+                            <tr>
+                                <td>文章一级分类:</td>
+                                <td>
+                                    <select name="firstCatagory" id="firstCatagory" class="inbox">
+                                        <option>技术干货</option>
+                                        <option>随笔</option>
+                                        <option>摄影</option>
+                                    </select>
+                                </td>
+                            </tr>
 							<tr>
-								<td>文章分类：</td>
+								<td>文章二级分类：</td>
 								<td>
                                     <input type="text" id="catagory" name="catagory" class="inbox"  placeholder="请输入类别,以逗号隔开"/>
 								</td>
@@ -97,11 +107,13 @@
                     var articleAbstract = $("#articleAbstract").val();
                     var articleSource = $("#articleSource").val();
                     var content = UE.getEditor('editor').getContent();
+                    var maincategory = $("#firstCatagory").val();
                     if(!(category && articleTitle && articleAuthor && articleAbstract && articleSource && content)){
                         alert('把内容填满');
                         return false;
                     }
                     var datas = {
+                        "maincategory":maincategory,
                         "category":category,
                         "content":content,
                         "articleTitle":articleTitle,

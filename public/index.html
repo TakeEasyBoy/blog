@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="前端开发技术分享博客">
-      <meta name="keyword" content="前端开发">
+    <meta name="keyword" content="前端开发">
     <meta name="author" content="黄名超">
     <link rel="icon" href="./images/favicon.ico">
     <title>博客-首页</title>
@@ -30,8 +30,8 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-      <!-- 引入模版-->
-      <script src="./admin/template.js"></script>
+    <!-- 引入模版-->
+    <script src="./admin/template.js"></script>
   </head>
 
     <body>
@@ -41,25 +41,26 @@
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-toggle" aria-expanded="false" aria-controls="navbar">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="index.html">极客</a>
+                        <a class="navbar-brand" href="index.html">路飞的笑</a>
                     </div>
-                    <div class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
+                    <div class="navbar-collapse collapse" id="navbar-toggle">
+                        <ul class="nav navbar-nav" >
                             <li class="active"><a href="index.html">主页</a></li>
-                            <li><a href="#">随笔</a></li>
-                            <li><a href="#">技术干货</a></li>
+                            <li><a href="techage.html">技术干货</a></li>
+                            <li><a href="essay.html">随笔</a></li>
+                            <li><a href="">摄影</a></li>
                             <li><a href="aboutme.html">关于我</a></li>
                         </ul>
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-sm-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字查找文章...">
+                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字搜索">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" id="keySearchBtn" type="button">搜一搜</button>
                                     </span>
@@ -104,12 +105,12 @@
     <script src="./scripts/ie10-viewport-bug-workaround.js"></script>
     <!-- 请求文章列表-->
     <script src="blog.js"></script>
+
 </body>
     <script type="text/javascript">
       //显示文章列表的方法
         function showArticleLists(page){
             var keywords = $("#keySearch").val();
-            console.log(keywords);
             $.get('/users/requestlists.html?page='+page+'&keywords='+keywords,function (data) {
                 if(data){
                   var html = '';
@@ -120,9 +121,9 @@
                       html += '<div class="blog-post">';
                       html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
                       html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
-                      html += ' <p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+                      html += '<p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
                       html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
-                      html += ' <p class="blog-categories-info blog-textindent">分类标签: '+data[i].category+'</p><hr></div>';
+                      html += '<p class="blog-categories-info blog-textindent">分类标签: '+data[i].category+'</p><hr></div>';
                   }
                   $("#articleLists").html(html);
 
@@ -154,7 +155,7 @@
                     $("#articleLists").html(html);
                 }
           });
-      }
+        }
 //      调用文章列表函数
         showArticleLists(1);
         //请求分类信息
@@ -163,5 +164,6 @@
         $("#keySearchBtn").on('click',function(){
             showArticleLists(1);
         });
+
   </script>
 </html>

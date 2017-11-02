@@ -22,8 +22,9 @@ router.get('/requestlists.html', function(req, res, next) {
         { "abstract":keywords},
         { "author"	:keywords},
         { "source"	:keywords},
-        { "category":keywords}
+        { "subcategory":keywords}
     ];
+	console.log();
     blogArticleQueryModel.find({$or:queryArr}).sort({"ctime":-1}).exec(function(err,data){
         //第一次查询,需要知道总的条数,
         var pagecounts = Math.ceil(data.length/PAGE_SIZE);
@@ -62,7 +63,7 @@ router.get('/requestcategoryLists.html',function(req,res){
             if(data){
                 //循环遍历所有的分类信息
                 for(var i in data){
-                    categories.push(data[i].category);//将信息push进入category
+                    categories.push(data[i].subcategory);//将信息push进入category
                 }
                 //console.log(categories);
                 res.send(categories);
@@ -70,15 +71,26 @@ router.get('/requestcategoryLists.html',function(req,res){
         }
     });
 });
-/*
-//请求关于我的信息中分类信息的路由
-router.post('/requestaboutme.html',function(req,res){
-    console.log("requestaboutme test passed!",req.body.id);
-    blogArticleQueryModel.find({}).exec(function(err,data){
-        res.send(data);
+//请求每个条目的分类信息的路由
+router.post('/requestcategorydetailes.html',function(req,res){
+    console.log("requestcategorydetailes test passed!",req.body.queryItem);
+	var queryItem = new RegExp(req.body.queryItem);
+	var queryArr = [
+		{ "subcategory":queryItem}
+	];
+	console.log(queryArr);
+    blogArticleQueryModel.find({$or:queryArr}).exec(function(err,data){
+	    if(err){
+		    throw err;
+	    }else{
+		    console.log(data);
+			if(data){
+
+				res.send(data);
+			}
+	    }
     });
 })
-*/
 
 
 module.exports = router;

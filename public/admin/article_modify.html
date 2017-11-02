@@ -25,7 +25,17 @@
                             <td><input type="text" id="articleTitle" name="articleTitle" class="inbox"/></td>
                         </tr>
                         <tr>
-                            <td>文章分类：</td>
+                            <td>文章一级分类:</td>
+                            <td>
+                                <select name="firstCatagory" id="firstCatagory" class="inbox">
+                                    <option>技术干货</option>
+                                    <option>随笔</option>
+                                    <option>摄影</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>文章二级分类：</td>
                             <td>
                                 <input type="text" id="catagory" name="catagory" class="inbox"  placeholder="请输入类别,以逗号隔开"/>
                             </td>
@@ -40,7 +50,9 @@
                         </tr>
                         <tr>
                             <td>摘&emsp;&emsp;要：</td>
-                            <td><input type="text" id="articleAbstract" name="articleAbstract" class="inbox"/></td>
+                            <td>
+                                <textarea name="articleAbstract" id="articleAbstract" cols="101" rows="10" ></textarea>
+                            </td>
                         </tr>
                         <tr>
                             <td>内&emsp;&emsp;容：</td>
@@ -79,7 +91,7 @@
                 //进入页面后,获取浏览器中的id,然后发起旧数据的请求
                     window.id = (location.href).split("=")[1];
                     $.get('/admin/modifyitem.html?id=' + id, function (data) {
-//                  console.log(data);
+                  console.log(data);
                         $("#articleTitle").val(data.title);
                         $("#articleAbstract").val(data.abstract);
 //                    $("#articleContent").val(data.content);
@@ -90,8 +102,10 @@
                             ue.setContent(data.content);
                         });
 
-                        $("#catagory").prop({"value": data.category});
+                        $("#catagory").prop({"value": data.subcategory});
+                        $("#firstCatagory").prop({"value": data.maincategory});
                         $("#articleAuthor").val(data.author);
+                        $("#articleSource").val(data.source);
                     });
             })()
 
@@ -114,6 +128,7 @@
                 $("#confirmbtn").click(function(){
                 	//使用原生的ajax来写
 
+                    var maincategory = $("#firstCatagory").prop("value");
                     var category = $("#catagory").prop("value");
                     //获取输入框中的内容
                     var articleTitle = $("#articleTitle").val();
@@ -121,7 +136,9 @@
                     var articleAbstract = $("#articleAbstract").val();
                     var articleSource = $("#articleSource").val();
                     var content = UE.getEditor('editor').getContent();
+                    console.log(articleSource);
                     var datas = {
+                        "maincategory":maincategory,
                         "category":category,
                         "content":content,
                         "articleTitle":articleTitle,

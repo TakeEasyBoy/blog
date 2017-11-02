@@ -7,6 +7,8 @@
 ;(function(){
     function showcategoryLists(){
         //ajax请求分类信息
+	    var tagType = ['btn-info','btn-primary','btn-success','btn-warning','btn-danger'];
+	    var typeindex  ;
         $.get('/users/requestcategoryLists.html',function (data) {
             if(data){
                 var category = [];    //用于遍历对象
@@ -37,24 +39,42 @@
                 }
                 //拼接分类信息
                 var html = '';
-                for(var i in category){
-                    html += '<button class="btn btn-info" type="button"><a href="">'+obj[category[i]].value+'&emsp;<span class="badge">'+obj[category[i]].count+'</span></a></button>';
+
+	            for(var i in category){
+		            //用产生的随机数来生成按钮的颜色
+		            typeindex = Math.floor(Math.random()*5);
+                    html += '<p><button class="btn '+tagType[typeindex]+'" type="button">'+obj[category[i]].value+'</button></p>';
                 }
                 $("#category").html(html);
-                //console.log(obj,category);
             }
         });
     }
     function searchkeywors(){
-        $(function(){
-            $("#searchBtn").on('click',function(){
-                $("#keySearch").val();
-                console.log($("#keySearch").val());
-            });
-
-        })
-
+        $("#searchBtn").on('click',function(){
+            $("#keySearch").val();
+            console.log($("#keySearch").val());
+        });
     }
+	function requestcategorydetailes(){
+		//事件委派的方式为每个按钮添加跳转至相应界面的事件请求
+		$("#category").on('click','button',function(){
+			console.dir($(this).text());
+			//查找每个的分类请求
+			var queryItem = $(this).text();
+			$.post('/users/requestcategorydetailes.html',{"queryItem":queryItem},function(data){
+				if(data){
+					console.log(data);
+					return data;
+				}
+			});
+		});
+	}
+
     window.showcategoryLists = showcategoryLists;
     window.searchkeywors = searchkeywors;
+	window.requestcategorydetailes = requestcategorydetailes;
+
+
+
+
 })();

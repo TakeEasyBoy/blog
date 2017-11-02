@@ -10,6 +10,11 @@
     <link rel="icon" href="./images/favicon.ico">
 
     <title>博客-详情</title>
+    <!-- 引入代码高亮插件 样式-->
+    <link rel="stylesheet" href="./ueditor/third-party/SyntaxHighlighter/shCore.css"/>
+    <link rel="stylesheet" href="./ueditor/third-party/SyntaxHighlighter/shCoreRDark.css"/>
+    <!-- 引入代码高亮插件-->
+    <script type="text/javascript" src="./ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
 
     <!-- Bootstrap core CSS -->
     <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
@@ -22,9 +27,6 @@
     <!-- Custom styles for this template -->
     <link href="./styles/blog.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="./ueditor/third-party/SyntaxHighlighter/shCoreRDark.css"/>
-
-
     <script src="./scripts/ie10-viewport-bug-workaround.js"></script>
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="./scripts/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -36,7 +38,10 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 
     <![endif]-->
-    <script type="text/javascript" src="./ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+    <script type="text/javascript">
+        SyntaxHighlighter.all();
+    </script>
+
     <!-- 引入模版-->
     <script src="./admin/template.js"></script>
 
@@ -46,35 +51,30 @@
 
     <header class="blog-masthead">
         <div class="container">
-          <!--  <nav class="blog-nav">
-                <a class="blog-nav-item" href="index.html">主页</a>
-                <a class="blog-nav-item" href="#">随笔</a>
-                <a class="blog-nav-item active" href="#">技术干货</a>
-                <a class="blog-nav-item" href="#">分类</a>
-                <a class="blog-nav-item" href="aboutme.html">关于我</a>
-            </nav>-->
+
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-toggle" aria-expanded="false" aria-controls="navbar">
                             <span class="sr-only">Toggle navigation</span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">极客</a>
+                        <a class="navbar-brand" href="index.html">路飞的笑</a>
                     </div>
-                    <div class="navbar-collapse collapse">
+                    <div class="navbar-collapse collapse" id="navbar-toggle">
                         <ul class="nav navbar-nav">
                             <li><a href="index.html">主页</a></li>
-                            <li><a href="#">随笔</a></li>
                             <li class="active"><a href="#">技术干货</a></li>
+                            <li><a href="essay.html">随笔</a></li>
+                            <li><a href="photography.html">摄影</a></li>
                             <li><a href="aboutme.html">关于我</a></li>
                         </ul>
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-sm-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字查找文章...">
+                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字搜索">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" id="keySearchBtn" type="button">搜一搜</button>
                                     </span>
@@ -90,13 +90,12 @@
     <div class="container">
 
         <div class="blog-header">
-            <h4 class="blog-title">博客主页</h4>
-            <p class="lead blog-description">这是博客内容</p>
+            <h4 class="blog-title text-info">技术干货</h4>
         </div>
-
         <div class="row">
             <div class="col-sm-8 blog-main">
-                <article class="blog-post" id="articleDetaile"></article>
+                <!-- 放文章列表的-->
+                <div class="blog-post" id="articleDetaile"></div>
             </div><!-- /.blog-main -->
             <!-- 侧边栏-->
             <script src="scripts/aside.js"></script>
@@ -113,36 +112,24 @@
     <!-- 请求文章列表-->
 <script src="blog.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script type="text/javascript"> SyntaxHighlighter.all();</script>
+
     <!--请求文章详情的js-->
 <script type="text/javascript">
     //查找地址栏的id,注意id的取得的方法
-    var id = location.href.split("=")[1];
-    $.post('/users/requestDetaile.html',{"id":id},function(data){
-        if(data){
-            var html = '';
-            html += '<h3 class="blog-post-title">'+data.title+'</h3>';
-            html += '<p>'+data.content+'</p>';
-            html += '<p class="blog-post-meta">'+data.ctime+'  by &emsp;&emsp;<a href="#">'+data.author+'</a></p>';
-            $("#articleDetaile").html(html);
-        }
-    });
-    function showArticleLists(){
-        $.get('/users/requestlists.html',function (data) {
+    $(function(){
+        SyntaxHighlighter.all();
+        var id = location.href.split("=")[1];
+        $.post('/users/requestDetaile.html',{"id":id},function(data){
             if(data){
                 var html = '';
-                for(var i in data){
-                    html += '<div class="blog-post">';
-                    html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
-                    html += '<p><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].abstract+'</a></p><hr></div>';
-                }
-                $("#articleLists").html(html);
-
+                html += '<h3 class="blog-post-title">'+data.title+'</h3>';
+                html += data.content;
+                html += '<p class="blog-post-meta">'+data.ctime+'  by &emsp;&emsp;<a href="#">'+data.author+'</a></p>';
+                $("#articleDetaile").html(html);
             }
         });
-    }
-    showArticleLists();
-    showcategoryLists();
+        showcategoryLists();
+    })
 </script>
 
 </body>

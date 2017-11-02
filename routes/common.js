@@ -31,7 +31,8 @@ var blogArticleSchema = new mongoose.Schema({
     title               :String,        //登陆名
     content             :String,
     ctime               :String,
-    category            :String,
+    maincategory        :String,
+	subcategory         :String,
     author              :String,
     abstract            :String,
     source				:String

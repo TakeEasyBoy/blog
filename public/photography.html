@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="前端开发技术分享博客">
+      <meta name="keyword" content="前端开发">
+    <meta name="author" content="黄名超">
+    <link rel="icon" href="./images/favicon.ico">
+    <title>博客-摄影</title>
+    <!-- Bootstrap core CSS -->
+    <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
+    <link href="./styles/bootstrap.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="./styles/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./styles/blog.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="./scripts/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./scripts/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+      <!-- 引入模版-->
+      <script src="./admin/template.js"></script>
+  </head>
+
+    <body>
+    <!--header-->
+    <header class="blog-masthead">
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-toggle" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="index.html">路飞的笑</a>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar-toggle">
+                        <ul class="nav navbar-nav">
+                            <li><a href="index.html">主页</a></li>
+                            <li><a href="techage.html">技术干货</a></li>
+                            <li><a href="essay.html">随笔</a></li>
+                            <li class="active"><a href="photography.html">摄影</a></li>
+                            <li><a href="aboutme.html">关于我</a></li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="keySearch" placeholder="输入关键字搜索">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" id="keySearchBtn" type="button">搜一搜</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+      <div class="blog-header row">
+        <h3 class="blog-title">代码,让世界更美好</h3>
+        <p class="lead blog-description">本站专注技术分享,顺带吹吹牛皮</p>
+      </div>
+      <div class="row">
+        <div class="col-sm-8 blog-main">
+            <!--//文章内容插入到这来-->
+            <article id="articleLists"></article>
+            <!-- 分页信息列表-->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagelists"></ul>
+            </nav>
+        </div><!-- /.blog-main -->
+          <!-- aside-->
+          <script src="scripts/aside.js"></script>
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+
+    <!-- footer-->
+    <script src="scripts/footer.js"></script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <script src="./scripts/jquery.min.js"></script>
+    <script src="./scripts/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./scripts/ie10-viewport-bug-workaround.js"></script>
+    <!-- 请求文章列表-->
+    <script src="blog.js"></script>
+</body>
+    <script type="text/javascript">
+      //显示文章列表的方法
+        function showArticleLists(page){
+            var keywords = $("#keySearch").val();
+//            console.log(keywords);
+            $.get('/users/requestlists.html?page='+page+'&keywords='+keywords,function (data) {
+                if(data){
+                  var html = '';
+                  var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
+//                   console.log(pagecounts);
+                    //拼接文章列表
+                  for(var i in data){
+                      html += '<div class="blog-post">';
+                      html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+                      html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
+                      html += '<p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+                      html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
+                      html += '<p class="blog-categories-info blog-textindent">分类标签: '+data[i].category+'</p><hr></div>';
+                  }
+                  $("#articleLists").html(html);
+
+                  //拼接分页信息
+                  var html = '';
+                    //如果当前页大于1,才显示上一页
+                    if(page > 1){
+                        html += '<li><a href="javascript:showArticleLists('+(page-1)+')" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+                    }else{
+                        html += '<li class="disabled"><a href="javascript:showArticleLists('+(page-1)+')" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+                    }
+                    for(var i = 1; i <= pagecounts;i++){
+                        if(page == i){
+                            html += '<li class="active"><a href="javascript:showArticleLists('+i+')">'+i+'</a></li>';
+                        }else{
+                            html += '<li><a href="javascript:showArticleLists('+i+')">'+i+'</a></li>';
+                        }
+
+                    }
+                    //如果当前页小于总的页数,才显示下一页
+                    if(page < pagecounts){
+                        html += '<li><a href="javascript:showArticleLists('+(page+1)+')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+                    }else{
+                        html += '<li class="disabled"><a href="javascript:showArticleLists('+(page+1)+')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+                    }
+                    $("#pagelists").html(html);
+              }else{
+                var html ='不好意思,没有找到你想要的..';
+                    $("#articleLists").html(html);
+                }
+          });
+        }
+//      调用文章列表函数
+        showArticleLists(1);
+        //请求分类信息
+        showcategoryLists();
+        //处理搜索请求
+        $("#keySearchBtn").on('click',function(){
+            showArticleLists(1);
+        });
+  </script>
+</html>

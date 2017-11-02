@@ -3,7 +3,7 @@ var router = express.Router();
 var mongoose = require('./common.js');
 
 //定义每页页的条数
-var PAGE_SIZE = 5;
+var PAGE_SIZE = 10;
 
 //console.dir(mongoose); //测试成功 可用
 
@@ -56,10 +56,11 @@ router.get('/check.html',function(req,res){
 //处理新闻发布的请求
 router.post('/article_publish.html',function(req,res){
     console.log("publish test passed");
-    console.log(req.body.category);
+    console.log(req.body.articleSource);
     var author = req.body.articleAuthor;
     var content = req.body.content;
     var title = req.body.articleTitle;
+	var maincategory = req.body.maincategory;
     var category = req.body.category;
     var articleAbstract = req.body.articleAbstract;
     var source = req.body.articleSource;
@@ -69,7 +70,8 @@ router.post('/article_publish.html',function(req,res){
     datas.title = title;
     datas.content = content;
     datas.author = author;
-    datas.category = category;
+    datas.maincategory = maincategory;
+	datas.subcategory = category;
     datas.ctime = time;
     datas.abstract = articleAbstract;
     datas.source = source;
@@ -109,7 +111,7 @@ router.get('/requestlists.html',function(req,res){
     blogArticleQueryModel.find({$or:queryArr}).exec(function(err,data){
         //获取总页数
         var pagecounts =Math.ceil(data.length/PAGE_SIZE);
-        blogArticleQueryModel.find({$or:queryArr}).skip(skippage).limit(PAGE_SIZE).exec(function(err,data){
+        blogArticleQueryModel.find({$or:queryArr}).skip(skippage).limit(PAGE_SIZE).sort({"_id":-1}).exec(function(err,data){
             //console.log(data);
             //将当前的总页数传递给前端.
             data.push({"pageconuts":pagecounts});
@@ -148,7 +150,7 @@ router.get('/modifyitem.html',function(req,res){
     })
 })
 
-//处理修改新闻条目的请求
+//处理确认修改新闻条目的请求
 router.post('/comfirmmodify.html',function(req,res){
     console.log("comfirmmodify test passed");
     //console.dir(req.body);
@@ -156,6 +158,7 @@ router.post('/comfirmmodify.html',function(req,res){
     var author = req.body.articleAuthor;
     var content = req.body.content;
     var title = req.body.articleTitle;
+    var maincategory = req.body.maincategory;
     var category = req.body.category;
     var articleAbstract = req.body.articleAbstract;
     var source = req.body.articleSource;
@@ -165,7 +168,8 @@ router.post('/comfirmmodify.html',function(req,res){
         data.title = title;
         data.content = content;
         data.author = author;
-        data.category = category;
+        data.maincategory = maincategory;
+        data.subcategory = category;
         data.abstract = articleAbstract;
         data.source = source;
         if(err){
