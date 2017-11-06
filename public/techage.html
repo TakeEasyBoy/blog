@@ -11,7 +11,7 @@
     <link rel="icon" href="./images/favicon.ico">
     <title>博客-技术干货</title>
     <!-- Bootstrap core CSS -->
-    <!--<link href="./styles/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href="./styles/bootstrap.css" rel="stylesheet">-->
     <link href="./styles/bootstrap.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -52,10 +52,10 @@
                     <div class="navbar-collapse collapse" id="navbar-toggle">
                         <ul class="nav navbar-nav">
                             <li><a href="index.html">主页</a></li>
-                            <li class="active"><a href="techage.html">技术干货</a></li>
+                            <li class="active"><a href="techage.html">技术文章</a></li>
                             <li><a href="essay.html">随笔</a></li>
                             <li><a href="photography.html">摄影</a></li>
-                            <li><a href="aboutme.html">关于我</a></li>
+                            <!--<li><a href="aboutme.html">关于我</a></li>-->
                         </ul>
                         <div class="row">
                             <div class="col-sm-3">
@@ -160,7 +160,10 @@
         showArticleLists(1);
         //请求分类信息
         showcategoryLists();
-        requestcategorydetailes();
+        //注册分类信息按钮的点击事件
+        requestcategorydetailes(function(data){
+            console.log(data);
+        });
         //处理搜索请求
         $("#keySearchBtn").on('click',function(){
             showArticleLists(1);

@@ -55,7 +55,8 @@
             console.log($("#keySearch").val());
         });
     }
-	function requestcategorydetailes(){
+	//注册每个分类按钮的事件,通过回调函数的方式将数据回传
+	function requestcategorydetailes(cb){
 		//事件委派的方式为每个按钮添加跳转至相应界面的事件请求
 		$("#category").on('click','button',function(){
 			console.dir($(this).text());
@@ -64,7 +65,8 @@
 			$.post('/users/requestcategorydetailes.html',{"queryItem":queryItem},function(data){
 				if(data){
 					console.log(data);
-					return data;
+					//通过回调函数的形式将数据进行返回
+					cb(data);
 				}
 			});
 		});

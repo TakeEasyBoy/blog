@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('./common.js');
 
-var PAGE_SIZE = 3;
+var PAGE_SIZE = 8;
 
 //请求文章列表信息的路由
 /*

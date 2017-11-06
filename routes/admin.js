@@ -56,7 +56,7 @@ router.get('/check.html',function(req,res){
 //处理新闻发布的请求
 router.post('/article_publish.html',function(req,res){
     console.log("publish test passed");
-    console.log(req.body.articleSource);
+    //console.log(req.body.articleSource);
     var author = req.body.articleAuthor;
     var content = req.body.content;
     var title = req.body.articleTitle;
@@ -75,7 +75,7 @@ router.post('/article_publish.html',function(req,res){
     datas.ctime = time;
     datas.abstract = articleAbstract;
     datas.source = source;
-    console.log(datas);
+    //console.log(datas);
     datas.save(function(err,data){
         if(err){
             throw err;
