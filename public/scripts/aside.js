@@ -14,14 +14,6 @@ var html = '<aside class="col-sm-3 col-sm-offset-1 blog-sidebar">\
             <h4>分类</h4>\
             <ol class="list-unstyled" id="category"></ol>\
             </div>\
-            <div class="sidebar-module">\
-            <h4>Elsewhere</h4>\
-            <ol class="list-unstyled">\
-            <li><a href="#">GitHub</a></li>\
-            <li><a href="#">Twitter</a></li>\
-            <li><a href="#">Facebook</a></li>\
-            </ol>\
-            </div>\
             </aside>';
 
 document.write(html);

@@ -4,12 +4,14 @@
  * 规定后台传过来的数据是个存好每个条目已经分好类别的数组,减少服务器负载
  *module description
  */
-;(function(){
-    function showcategoryLists(){
+;(function(exports){
+	//显示分类列表,将对应页面的分类信息穿进来
+    function showcategoryLists(data){
         //ajax请求分类信息
 	    var tagType = ['btn-info','btn-primary','btn-success','btn-warning','btn-danger'];
 	    var typeindex  ;
-        $.get('/users/requestcategoryLists.html',function (data) {
+
+        $.get('/users/requestcategoryLists.html?cate='+data,function (data) {
             if(data){
                 var category = [];    //用于遍历对象
                 var categories = [];//结构,:类别+长度;存储所有的类别
@@ -49,6 +51,7 @@
             }
         });
     }
+	//
     function searchkeywors(){
         $("#searchBtn").on('click',function(){
             $("#keySearch").val();
@@ -59,7 +62,7 @@
 	function requestcategorydetailes(cb){
 		//事件委派的方式为每个按钮添加跳转至相应界面的事件请求
 		$("#category").on('click','button',function(){
-			console.dir($(this).text());
+			//console.log($(this).text());
 			//查找每个的分类请求
 			var queryItem = $(this).text();
 			$.post('/users/requestcategorydetailes.html',{"queryItem":queryItem},function(data){
@@ -72,11 +75,9 @@
 		});
 	}
 
-    window.showcategoryLists = showcategoryLists;
-    window.searchkeywors = searchkeywors;
-	window.requestcategorydetailes = requestcategorydetailes;
+	exports.showcategoryLists = showcategoryLists;
+	exports.searchkeywors = searchkeywors;
+	exports.requestcategorydetailes = requestcategorydetailes;
 
 
-
-
-})();
+})(window);
