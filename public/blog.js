@@ -67,7 +67,7 @@
 			var queryItem = $(this).text();
 			$.post('/users/requestcategorydetailes.html',{"queryItem":queryItem},function(data){
 				if(data){
-					console.log(data);
+					//console.log(data);
 					//通过回调函数的形式将数据进行返回
 					cb(data);
 				}

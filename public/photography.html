@@ -167,7 +167,23 @@
             showcategoryLists(maincategory);
             //注册分类信息按钮的点击事件
             requestcategorydetailes(function(data){
-                console.log(data);
+                if(data){
+                    var html = '';
+                    //拼接文章列表
+                    for(var i in data){
+                        html += '<div class="blog-post">';
+                        html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+                        html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
+                        html += '<p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+                        html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
+                        html += '<p class="blog-categories-info blog-textindent">分类标签: '+data[i].subcategory+'</p><hr></div>';
+                    }
+                    $("#articleLists").html(html);
+                    //分页信息搞为空
+                    $("#pagelists").html('');
+                }else{
+                    alert("不好意思,没找到你想要的");
+                }
             });
             //处理搜索请求
             $("#keySearchBtn").on('click',function(){

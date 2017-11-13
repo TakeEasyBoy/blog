@@ -93,12 +93,12 @@ router.post('/requestcategorydetailes.html',function(req,res){
 	var queryArr = [
 		{ "subcategory":queryItem}
 	];
-	console.log(queryArr);
+	//console.log(queryArr);
     blogArticleQueryModel.find({$or:queryArr}).exec(function(err,data){
 	    if(err){
 		    throw err;
 	    }else{
-		    console.log(data);
+		    //console.log(data);
 			if(data){
 				res.send(data);
 			}

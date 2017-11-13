@@ -75,6 +75,7 @@ h6, .h6 {
 /* Active state gets a caret at the bottom */
 .blog-nav .active {
   color: #fff;
+    background-color: #ccc;
 }
 .blog-nav :hover:after,.blog-nav .active:after {
   position: absolute;
@@ -155,6 +156,21 @@ h6, .h6 {
 .sidebar-module-inset ol:last-child {
   margin-bottom: 0;
 }
+
+/*设置动画效果*/
+.sidebar-git img,.sidebar-qq img{
+    transition: all 0.8s;
+    -webkit-transition: all 0.8s;
+    -moz-transition: all 0.8s ;
+    -ms-transition: all 0.8s ;
+    -o-transition: all 0.8s ;
+    transition: all 0.8s;
+}
+/*设置动画效果*/
+.sidebar-git img:hover,.sidebar-qq img:hover{
+    transform: rotatez(360deg);
+}
+
 /*分类信息使用浮动布局*/
 /*#category{
     display: flex;
