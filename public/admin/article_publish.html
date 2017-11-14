@@ -87,7 +87,9 @@
 		<script>
 			$(function(){
                 var ue = UE.getEditor('editor');
-
+                ue.addListener('paste',function(e){
+                    console.dir(e);
+                });
 				$('dt').click(function(){
 					var obj=$(this).next();
 					if($(this).next().css('display')=='block'){

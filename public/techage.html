@@ -111,7 +111,7 @@
             //将主分类信息传递到后台
             var maincategory = '技术干货';
             //显示文章列表的方法
-            function showArticleLists(page){
+          /*  function showArticleLists(page){
                 var keywords = $("#keySearch").val();
 
 //            console.log(keywords);
@@ -160,9 +160,9 @@
                         $("#articleLists").html(html);
                     }
                 });
-            }
+            }*/
 //      调用文章列表函数
-            showArticleLists(1);
+            showArticleLists({"page":1,"maincategory":maincategory});
             //请求分类信息
             showcategoryLists(maincategory);
             //注册分类信息按钮的点击事件

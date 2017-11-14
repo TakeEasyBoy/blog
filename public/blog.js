@@ -75,9 +75,122 @@
 		});
 	}
 
+	//显示文章列表的方法
+	/*
+	* showArticleLists(options)
+	*
+	* params: {
+	*   "maincategory":'',
+	*   "page":1,
+	* }
+	* */
+	function showArticleLists(options){
+		//设置默认属性
+		var def = {"maincategory":"","page":1};
+		var settings = $.extend({},def, options);
+		console.log(options,settings);
+		var page = settings.page;
+		var maincategory = settings.maincategory;
+		var keywords = $("#keySearch").val();
+		//cate 主要用于主分类信息的查询
+		$.get('/users/requestlists.html?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
+			if(data){
+				var html = '';
+				var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
+//                   console.log(pagecounts);
+				//拼接文章列表
+				for(var i in data){
+					html += '<div class="blog-post">';
+					html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+					html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
+					html += '<p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+					html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
+					html += '<p class="blog-categories-info blog-textindent">分类标签: '+data[i].subcategory+'</p><hr></div>';
+				}
+				$("#articleLists").html(html);
+
+				//拼接分页信息
+				var html = '';
+				//如果当前页大于1,才显示上一页
+				//分页这里有bug,无法通过拼接字符串的方式拼接出一个showArticleLists("maincategory":"","page":1);
+				if(page > 1){
+					html += '<li><a href="javascript:showArticleLists({page:'+(page-1)+'})" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+				}else{
+					html += '<li class="disabled"><a href="javascript:showArticleLists({page:'+(page-1)+'})" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+				}
+				for(var i = 1; i <= pagecounts;i++){
+					if(page == i){
+						html += '<li class="active"><a href="javascript:showArticleLists({page:'+i+'})">'+i+'</a></li>';
+					}else{
+						html += '<li><a href="javascript:showArticleLists({page:'+i+'})">'+i+'</a></li>';
+					}
+
+				}
+				//如果当前页小于总的页数,才显示下一页
+				if(page < pagecounts){
+					html += '<li><a href="javascript:showArticleLists({page:'+(page+1)+'})" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+				}else{
+					html += '<li class="disabled"><a href="javascript:showArticleLists({page:'+(page+1)+'})" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+				}
+				$("#pagelists").html(html);
+			}else{
+				var html ='不好意思,没有找到你想要的..';
+				$("#articleLists").html(html);
+			}
+		});
+	}
+	/*function showArticleLists(page){
+		var keywords = $("#keySearch").val();
+		//cate 主要用于主分类信息的查询
+		$.get('/users/requestlists.html?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
+			if(data){
+				var html = '';
+				var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
+//                   console.log(pagecounts);
+				//拼接文章列表
+				for(var i in data){
+					html += '<div class="blog-post">';
+					html += '<h3 class="blog-post-title"><a href="articledetaile.html?id='+data[i]._id+'">'+data[i].title+'</a></h3>';
+					html += '<p class="blog-textindent">'+data[i].abstract+'</p>';
+					html += '<p class="blog-textindent color647686 blog-text-readmore"><a href="articledetaile.html?id='+data[i]._id+'">阅读全文...</a></p>';
+					html += '<p class="blog-abstract-info"><span >'+ data[i].ctime+'</span>  <span>阅读量:(565)</span>    <a href="#">评论:(10)</a></p>';
+					html += '<p class="blog-categories-info blog-textindent">分类标签: '+data[i].subcategory+'</p><hr></div>';
+				}
+				$("#articleLists").html(html);
+
+				//拼接分页信息
+				var html = '';
+				//如果当前页大于1,才显示上一页
+				if(page > 1){
+					html += '<li><a href="javascript:showArticleLists('+(page-1)+')" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+				}else{
+					html += '<li class="disabled"><a href="javascript:showArticleLists('+(page-1)+')" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+				}
+				for(var i = 1; i <= pagecounts;i++){
+					if(page == i){
+						html += '<li class="active"><a href="javascript:showArticleLists('+i+')">'+i+'</a></li>';
+					}else{
+						html += '<li><a href="javascript:showArticleLists('+i+')">'+i+'</a></li>';
+					}
+
+				}
+				//如果当前页小于总的页数,才显示下一页
+				if(page < pagecounts){
+					html += '<li><a href="javascript:showArticleLists('+(page+1)+')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+				}else{
+					html += '<li class="disabled"><a href="javascript:showArticleLists('+(page+1)+')" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+				}
+				$("#pagelists").html(html);
+			}else{
+				var html ='不好意思,没有找到你想要的..';
+				$("#articleLists").html(html);
+			}
+		});
+	}*/
 	exports.showcategoryLists = showcategoryLists;
 	exports.searchkeywors = searchkeywors;
 	exports.requestcategorydetailes = requestcategorydetailes;
+	exports.showArticleLists = showArticleLists;
 
 
 })(window);
