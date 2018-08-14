@@ -86,7 +86,8 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-app.listen(80, function () {
+
+app.listen(8080, function () {
     console.log("服务器开启成功");
 });
 
