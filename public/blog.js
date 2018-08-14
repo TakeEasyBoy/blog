@@ -6,7 +6,7 @@
  */
 ;(function(exports){
 	//显示分类列表,将对应页面的分类信息穿进来
-	let baseurl = "http://www.westbrothers.cn:8080"
+	let baseurl = ""
     function showcategoryLists(data){
         //ajax请求分类信息
 	    var tagType = ['btn-info','btn-primary','btn-success','btn-warning','btn-danger'];
