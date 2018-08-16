@@ -6,8 +6,14 @@
 
 var app = require('../app');
 var debug = require('debug')('blog:server');
-var http = require('http');
-
+// var http = require('http');
+var https = retquire('https'),
+    fs = require('fs');
+// 读取证书
+var privatekey = fs.readFileSync('bin/1534815383427.key', 'utf8');
+var certificate = fs.readFileSync('bin/1534815383427.pem', 'utf8');
+// https 服务器选项
+var options={key:privatekey, cert:certificate};
 /**
  * Get port from environment and store in Express.
  */
@@ -19,7 +25,8 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
+var server = https.createServer(options,app);
 
 /**
  * Listen on provided port, on all network interfaces.

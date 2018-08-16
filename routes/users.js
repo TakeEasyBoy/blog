@@ -17,7 +17,7 @@ var PAGE_SIZE = 3;
 *
 * */
 
-router.get('/requestlists.html', function(req, res, next) {
+router.get('/requestlists', function(req, res, next) {
     //console.log(req.query.page);
     //当前页需要跳过的条数
 	//找寻当前主分页信息
@@ -53,7 +53,7 @@ router.get('/requestlists.html', function(req, res, next) {
 
 
 //请求文章详情的信息的路由
-router.post('/requestDetaile.html',function(req,res){
+router.post('/requestDetaile',function(req,res){
     //console.log("requestDetaile test passed!",req.body.id);
     var id = req.body.id;
     blogArticleQueryModel.findById({"_id":id}).exec(function(err,data){
@@ -66,7 +66,7 @@ router.post('/requestDetaile.html',function(req,res){
     });
 })
 //用于请求分类信息的路由,规定后台传给前端的数据是个存好每个条目已经分好类别的数组,减少服务器负载
-router.get('/requestcategoryLists.html',function(req,res){
+router.get('/requestcategoryLists',function(req,res){
     //console.log("requestcategoryLists test passed!");
     //根据分类信息查找所有的条目
 	var maincategory = new RegExp(req.query.cate);
@@ -87,7 +87,7 @@ router.get('/requestcategoryLists.html',function(req,res){
     });
 });
 //请求每个条目的分类信息的路由
-router.post('/requestcategorydetailes.html',function(req,res){
+router.post('/requestcategorydetailes',function(req,res){
     console.log("requestcategorydetailes test passed!",req.body.queryItem);
 	var queryItem = new RegExp(req.body.queryItem);
 	var queryArr = [

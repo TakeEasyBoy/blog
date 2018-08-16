@@ -119,7 +119,7 @@
     $(function(){
         SyntaxHighlighter.all();
         var id = location.href.split("=")[1];
-        $.post('/users/requestDetaile.html',{"id":id},function(data){
+        $.post('/users/requestDetaile',{"id":id},function(data){
             if(data){
                 var html = '';
                 html += '<h3 class="blog-post-title">'+data.title+'</h3>';

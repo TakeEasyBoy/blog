@@ -8,7 +8,7 @@ var PAGE_SIZE = 10;
 //console.dir(mongoose); //测试成功 可用
 
 //处理用户登陆验证的请求
-router.post('/checkuser.html',function(req,res){
+router.post('/checkuser',function(req,res){
     console.log('check router test passed');
     var username = req.body.username;
     var password = req.body.password;
@@ -27,16 +27,16 @@ router.post('/checkuser.html',function(req,res){
 });
 
 //退出登陆
-router.get('/logout.html',function(req,res){
+router.get('/logout',function(req,res){
 	console.log("logout");
 	res.clearCookie('user');
-	res.send('<script>alert("退出成功");location.href="/admin/login.html";</script>');
+	res.send('<script>alert("退出成功");location.href="/admin/login";</script>');
 });
 
 //检查是否有翻墙进来的
-router.get('/check.html',function(req,res){
+router.get('/check',function(req,res){
     if(req.cookies.user == undefined){
-        res.send('alert("请走正道,谢谢");location.href="./login.html";');
+        res.send('alert("请走正道,谢谢");location.href="./login";');
     }else{
         var username = req.cookies.user;
         blogQueryModel.find({"username":username}).exec(function(err,data){
@@ -46,7 +46,7 @@ router.get('/check.html',function(req,res){
                 if(data.length > 0){
                     res.send("1");
                 }else{
-                    res.send('alert("请走正道,谢谢");location.href="./login.html";');
+                    res.send('alert("请走正道,谢谢");location.href="./login";');
                 }
             }
         });
@@ -54,7 +54,7 @@ router.get('/check.html',function(req,res){
 });
 
 //处理新闻发布的请求
-router.post('/article_publish.html',function(req,res){
+router.post('/article_publish',function(req,res){
     console.log("publish test passed");
     //console.log(req.body.articleSource);
     var author = req.body.articleAuthor;
@@ -80,7 +80,7 @@ router.post('/article_publish.html',function(req,res){
         if(err){
             throw err;
         }else{
-            //res.send('alert("文章添加成功");location.href="/news_lists.html"');
+            //res.send('alert("文章添加成功");location.href="/news_lists"');
             res.send("文章发布成功!");
         }
     });
@@ -92,7 +92,7 @@ router.post('/article_publish.html',function(req,res){
 * 扩展:db.collection.find({ $or : [{a : 1}, {b : 2} ]})
  符合两个条件中任意一个的数据。$or语法表示或的意思。
 * */
-router.get('/requestlists.html',function(req,res){
+router.get('/requestlists',function(req,res){
     console.log("requestlists test passed");
     var keywords = new RegExp(req.query.keywords) ;
     //获取当前页数
@@ -122,7 +122,7 @@ router.get('/requestlists.html',function(req,res){
 });
 
 //处理删除新闻条目的请求
-router.get('/deleteitem.html',function(req,res){
+router.get('/deleteitem',function(req,res){
     console.log("deleteitem test passed");
     var id = req.query.id;
     blogArticleQueryModel.findById({"_id":id}).exec(function(err,data){
@@ -137,7 +137,7 @@ router.get('/deleteitem.html',function(req,res){
 
 
 //处理修改新闻条目的请求
-router.get('/modifyitem.html',function(req,res){
+router.get('/modifyitem',function(req,res){
     console.log("modifyitem test passed");
     var id = req.query.id;
     blogArticleQueryModel.findById({"_id":id}).exec(function(err,data){
@@ -151,7 +151,7 @@ router.get('/modifyitem.html',function(req,res){
 })
 
 //处理确认修改新闻条目的请求
-router.post('/comfirmmodify.html',function(req,res){
+router.post('/comfirmmodify',function(req,res){
     console.log("comfirmmodify test passed");
     //console.dir(req.body);
     var id = req.body.id;

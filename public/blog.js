@@ -6,13 +6,13 @@
  */
 ;(function(exports){
 	//显示分类列表,将对应页面的分类信息穿进来
-	let baseurl = ""
+	let baseurl = "https://westbrothers.cn"
     function showcategoryLists(data){
         //ajax请求分类信息
 	    var tagType = ['btn-info','btn-primary','btn-success','btn-warning','btn-danger'];
 	    var typeindex  ;
 
-        $.get(''+baseurl+'/users/requestcategoryLists.html?cate='+data,function (data) {
+        $.get(''+baseurl+'/users/requestcategoryLists?cate='+data,function (data) {
             if(data){
                 var category = [];    //用于遍历对象
                 var categories = [];//结构,:类别+长度;存储所有的类别
@@ -66,7 +66,7 @@
 			//console.log($(this).text());
 			//查找每个的分类请求
 			var queryItem = $(this).text();
-			$.post(''+baseurl+'/users/requestcategorydetailes.html',{"queryItem":queryItem},function(data){
+			$.post(''+baseurl+'/users/requestcategorydetailes',{"queryItem":queryItem},function(data){
 				if(data){
 					//console.log(data);
 					//通过回调函数的形式将数据进行返回
@@ -94,7 +94,7 @@
 		var maincategory = settings.maincategory;
 		var keywords = $("#keySearch").val();
 		//cate 主要用于主分类信息的查询
-		$.get(''+baseurl+'/users/requestlists.html?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
+		$.get(''+baseurl+'/users/requestlists?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
 			if(data){
 				var html = '';
 				var pagecounts = data.pop(data).pagecounts;//获取总的信息条数

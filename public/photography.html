@@ -116,7 +116,7 @@
 
 //            console.log(keywords);
                 //cate 主要用于主分类信息的查询
-                $.get('/users/requestlists.html?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
+                $.get('/users/requestlists?page='+page+'&keywords='+keywords+'&cate='+maincategory,function (data) {
                     if(data){
                         var html = '';
                         var pagecounts = data.pop(data).pagecounts;//获取总的信息条数
