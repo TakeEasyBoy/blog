@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var users = require('./routes/users');
 var admin = require('./routes/admin');
 var ueditor = require("./routes/ueditor");
+var cors = require('cors');
+
 var app = express();
 
 // view engine setup
@@ -18,10 +20,13 @@ app.set('view engine', 'ejs');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+//跨域处理，cors已经默认可以在header中携带token，无需其他设置
+app.use(cors());
 app.use('/users', users);
 app.use('/admin', admin);
 /*
@@ -38,9 +43,9 @@ app.use("/ueditor/ue", ueditor(path.join(__dirname, 'public'), function (req, re
     //客户端上传文件设置
     var imgDir = '/upload/images/';
     var ActionType = req.query.action;
-	console.log(ActionType);
+    console.log(ActionType);
     if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo' || ActionType === 'uploadscreenimage' || ActionType === 'uploadscrawl') {
-        var file_url = imgDir;//默认图片上传地址
+        var file_url = imgDir; //默认图片上传地址
         /*其他上传格式的地址*/
         if (ActionType === 'uploadfile') {
             file_url = '/upload/files/'; //附件
@@ -93,5 +98,3 @@ app.listen(8080, function () {
 
 
 module.exports = app;
-
-
